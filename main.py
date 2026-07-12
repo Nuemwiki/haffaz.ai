@@ -158,6 +158,19 @@ app.add_middleware(
 def home():
     return {"durum": "Hafiz AI - Konum Modu Aktif", "model": model_name, "db_loaded": len(quran_db) > 0}
 
+@app.get("/gunun-ayeti")
+def gunun_ayeti():
+    try:
+        if os.path.exists("gunun_ayeti.json"):
+            with open("gunun_ayeti.json", "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {
+        "text": "Şüphesiz Allah sabredenlerle beraberdir.",
+        "ref": "Bakara Suresi, 153. Ayet"
+    }
+
 def clean_json(text):
     text = text.strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
