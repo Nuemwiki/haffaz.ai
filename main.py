@@ -55,7 +55,7 @@ KURALLAR:
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
 LIMITS_FILE = os.path.join(os.path.dirname(__file__), "user_limits.json")
-GUNLUK_LIMIT_UCRETSIZ = 10
+GUNLUK_LIMIT_UCRETSIZ = 2
 
 def load_limits():
     if os.path.exists(LIMITS_FILE):
@@ -366,6 +366,15 @@ async def video_izlendi(x_user_id: str = Header(None, alias="X-User-ID")):
     print(f"After: {kayit}")
     save_limits(kullanici_limitler)
     return {"basarili": True, "kalan": GUNLUK_LIMIT_UCRETSIZ - kayit["kullanim"]}
+
+@app.post("/test-limit-arttir")
+async def test_limit_arttir(x_user_id: str = Header(None, alias="X-User-ID")):
+    global kullanici_limitler
+    kullanici_id = x_user_id or "anonim"
+    kayit = kullanici_limitler[kullanici_id]
+    kayit["kullanim"] = 0
+    save_limits(kullanici_limitler)
+    return {"basarili": True, "kalan": GUNLUK_LIMIT_UCRETSIZ}
 
 @app.get("/limit-durumu")
 async def limit_durumu(x_user_id: str = Header(None, alias="X-User-ID")):
