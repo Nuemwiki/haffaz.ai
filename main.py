@@ -372,9 +372,10 @@ async def test_limit_arttir(x_user_id: str = Header(None, alias="X-User-ID")):
     global kullanici_limitler
     kullanici_id = x_user_id or "anonim"
     kayit = kullanici_limitler[kullanici_id]
-    kayit["kullanim"] = 0
+    kayit["tarih"] = datetime.now().date()
+    kayit["kullanim"] = -8
     save_limits(kullanici_limitler)
-    return {"basarili": True, "kalan": GUNLUK_LIMIT_UCRETSIZ}
+    return {"basarili": True, "kalan": 10}
 
 @app.get("/limit-durumu")
 async def limit_durumu(x_user_id: str = Header(None, alias="X-User-ID")):
