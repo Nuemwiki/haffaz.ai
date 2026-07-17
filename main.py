@@ -55,7 +55,7 @@ KURALLAR:
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
 LIMITS_FILE = os.path.join(os.path.dirname(__file__), "user_limits.json")
-GUNLUK_LIMIT_UCRETSIZ = 2
+GUNLUK_LIMIT_UCRETSIZ = 5
 
 def load_limits():
     if os.path.exists(LIMITS_FILE):
