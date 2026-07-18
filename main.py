@@ -44,13 +44,14 @@ class QuranAnalysis(BaseModel):
 # Arapça metin ve Türkçe meal verilerini modelin üretmesini engelleyerek 
 # çıktı token sayısını %95 oranında azaltıyoruz. Model sadece koordinatları döndürecek.
 system_instruction = """
-GÖREV: Sesteki Kur'an ayetini bul ve koordinatını döndür.
+GÖREV: Sesteki Kur'an ayetini/ayetlerini veya kısa okuyuş parçalarını (lafızları) bul ve koordinatlarını döndür.
 KURALLAR:
 1. Yalnızca en iyi eşleşen TEK bir ana ayet döndür. Ayet yoksa boş nesne {} dön.
-2. Müteşabihler: Sadece hafızlıkta lafzen karıştırılabilecek (en az 3-4 kelime ardışık ortak veya başlangıcı aynı) en güçlü benzer ayetleri "sure_no:ayet_no" formatında (Örn: "2:5") listele. Alakasız/konusal benzerleri ekleme. Yoksa diziyi boş [] bırak. Maksimum 50 adet.
-3. Seste net bir şekilde Kur'an ayeti okunmuyorsa (sessizlik, gürültü, normal konuşma veya sadece tek başına "besmele/bismillah" çekilip sonrasında ayet okunmadıysa) KESİNLİKLE boş nesne {} dön. Şüpheli durumlarda halüsinasyon üretme, boş {} dön.
-4. Sadece JSON dön, Arapça/meal metni veya açıklama ekleme.
-ÇIKTI: {"sure_no": 1, "ayet_no": 1, "mutesabihler": ["2:10", "15:1"]}
+2. Kısa Okuyuşlar / Lafızlar: Seste sadece 1-3 kelimelik çok kısa bir ayet başlangıcı veya okuyuş parçası (Örn: "ya eyyühelinsanü" / "يَا أَيُّهَا الْإِنْسَانُ", "veylün yevmeizin", "hel etâ", vb.) duyulsa bile, bunu Kur'an'daki en uygun eşleşen ayetle (örn: İnfitar-6 veya İnşikak-6) mutlaka eşleştir. Bu tarz kısa okuyuşları gürültü veya sessizlik sayma, mutlaka Kur'an'daki yerini bulup döndür.
+3. Müteşabihler (Benzer Ayetler): Lafzen karıştırılabilecek, ortak kelime grupları barındıran veya başlangıcı/sonu benzeşen TÜM güçlü müteşabih (benzer) ayetleri son derece detaylı ve hassas bir şekilde tara. Bulduğun benzer ayetleri "sure_no:ayet_no" formatında (Örn: "82:6", "84:6") "mutesabihler" dizisinde eksiksiz listele. Lafzen karıştırılabilen en ufak benzerlikleri bile ekle. Maksimum 50 adet.
+4. Seste hiçbir şekilde Kur'an lafızı/ayeti okunmuyorsa (sadece sessizlik, tamamen ilgisiz gürültü veya normal günlük Türkçe/İngilizce konuşma varsa) boş nesne {} dön. Kur'an lafızları barındıran okuyuşlarda boş {} dönme, en yakın ayeti eşleştir.
+5. Sadece JSON dön, Arapça/meal metni veya açıklama ekleme.
+ÇIKTI ŞABLONU: {"sure_no": 82, "ayet_no": 6, "mutesabihler": ["84:6"]}
 """
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
