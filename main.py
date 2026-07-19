@@ -39,6 +39,7 @@ class QuranAnalysis(BaseModel):
     sure_no: Optional[int] = None
     ayet_no: Optional[int] = None
     mutesabihler: List[Mutesabih] = []
+    okunan_kelimeler: Optional[str] = None
 
 # --- SİSTEM TALİMATI (Performans ve Token Tasarrufu Odaklı) ---
 # Arapça metin ve Türkçe meal verilerini modelin üretmesini engelleyerek 
@@ -47,11 +48,12 @@ system_instruction = """
 GÖREV: Sesteki Kur'an ayetini/ayetlerini veya kısa okuyuş parçalarını (lafızları) bul ve koordinatlarını döndür.
 KURALLAR:
 1. Yalnızca en iyi eşleşen TEK bir ana ayet döndür. Ayet yoksa boş nesne {} dön.
-2. Kısa Okuyuşlar / Lafızlar: Seste sadece 1-3 kelimelik çok kısa bir ayet başlangıcı veya okuyuş parçası (Örn: "ya eyyühelinsanü" / "يَا أَيُّهَا الْإِنْسَانُ", "veylün yevmeizin", "hel etâ", vb.) duyulsa bile, bunu Kur'an'daki en uygun eşleşen ayetle (örn: İnfitar-6 veya İnşikak-6) mutlaka eşleştir. Bu tarz kısa okuyuşları gürültü veya sessizlik sayma, mutlaka Kur'an'daki yerini bulup döndür.
-3. Müteşabihler (Benzer Ayetler): Lafzen karıştırılabilecek, ortak kelime grupları barındıran veya başlangıcı/sonu benzeşen TÜM güçlü müteşabih (benzer) ayetleri son derece detaylı ve hassas bir şekilde tara. Bulduğun benzer ayetleri "sure_no:ayet_no" formatında (Örn: "82:6", "84:6") "mutesabihler" dizisinde eksiksiz listele. Lafzen karıştırılabilen en ufak benzerlikleri bile ekle. Maksimum 50 adet.
-4. Seste hiçbir şekilde Kur'an lafızı/ayeti okunmuyorsa (sadece sessizlik, tamamen ilgisiz gürültü veya normal günlük Türkçe/İngilizce konuşma varsa) boş nesne {} dön. Kur'an lafızları barındıran okuyuşlarda boş {} dönme, en yakın ayeti eşleştir.
+2. Kısa Okuyuşlar / Lafızlar: Seste sadece 1-3 kelimelik çok kısa bir ayet başlangıcı veya okuyuş parçası (Örn: "ya eyyühelinsanü" / "يَا أَيُّهَا الْإِنسَانُ", "veylün yevmeizin", "hel etâ", vb.) duyulsa bile, bunu Kur'an'daki en uygun eşleşen ayetle mutlaka eşleştir.
+3. Müteşabihler (Benzer Ayetler): Lafzen karıştırılabilecek, ortak kelime grupları barındıran veya başlangıcı/sonu benzeşen TÜM güçlü müteşabih (benzer) ayetleri tara ve "sure_no:ayet_no" formatında (Örn: "82:6") "mutesabihler" dizisinde listele. Maksimum 50 adet.
+4. Seste hiçbir şekilde Kur'an lafızı/ayeti okunmuyorsa boş nesne {} dön.
 5. Sadece JSON dön, Arapça/meal metni veya açıklama ekleme.
-ÇIKTI ŞABLONU: {"sure_no": 82, "ayet_no": 6, "mutesabihler": ["84:6"]}
+6. okunan_kelimeler alanına: seste duyulan Arapça kelimelerin SADECE KOK HALİNİ (harekesiz, sade Arapça) yaz. Örneğin seste "bismillahirrahmanirrahim" duyulduysa "بسم الله الرحمن الرحيم" yaz. Sadece duyulan kelimeleri yaz, tam ayeti yazma.
+ÇIKTI ŞABLONU: {"sure_no": 82, "ayet_no": 6, "okunan_kelimeler": "يا ايها الانسان", "mutesabihler": ["84:6"]}
 """
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
@@ -268,10 +270,15 @@ async def analiz_et(
                 if ar_text.startswith(bismillah):
                     ar_text = ar_text[len(bismillah):].strip()
             
+            # Okunan kısmı vurgula
+            okunan_kelimeler = item.get("okunan_kelimeler", "")
+            arapca_vurgulu = highlight_read_portion(ar_text, okunan_kelimeler) if okunan_kelimeler else ar_text
+
             main_card = {
                 "sure_no": sure_no,
                 "ayet_no": ayet_no,
                 "arapca": ar_text,
+                "arapca_vurgulu": arapca_vurgulu,
                 "meal": db_item.get("tr", ""),
                 "sure_adi": SURE_ADLARI.get(sure_no, ""),
                 "sayfa_no": min(604, db_item.get("page", 1)),
@@ -440,6 +447,65 @@ def highlight_arabic_word(ar_text: str, query: str) -> str:
         ar_words[best_word_idx] = f"<color>{target_word}</color>"
         return " ".join(ar_words)
         
+    return ar_text
+
+def highlight_read_portion(ar_text: str, okunan_kelimeler: str) -> str:
+    """Sesle okunan kelime grubunu ayet metninde bulup <color> tag ile işaretle.
+    Multi-word sliding window ile en iyi eşleşen sürekli aralığı vurgular."""
+    if not okunan_kelimeler or not ar_text:
+        return ar_text
+
+    def norm(t):
+        # Harekesiz, sade harf normalize
+        t = temizle_harakat(t)
+        return "".join(c for c in t if '\u0600' <= c <= '\u06FF')
+
+    ar_words = ar_text.split()
+    ok_words = okunan_kelimeler.strip().split()
+    if not ok_words:
+        return ar_text
+
+    norm_ar = [norm(w) for w in ar_words]
+    norm_ok = [norm(w) for w in ok_words]
+    
+    # Remove empty normalized tokens
+    norm_ok = [w for w in norm_ok if w]
+    if not norm_ok:
+        return ar_text
+
+    n = len(norm_ar)
+    k = len(norm_ok)
+
+    best_start = -1
+    best_end = -1
+    best_score = -1
+
+    # Sliding window of size k over the ayet words
+    for start in range(n):
+        window = norm_ar[start:start + k]
+        if not window:
+            break
+        # Count matching words (allowing partial prefix match)
+        matched = 0
+        for wa, wo in zip(window, norm_ok):
+            if wa == wo or wa.startswith(wo) or wo.startswith(wa):
+                matched += 1
+        score = matched
+        end = min(start + k - 1, n - 1)
+        if score > best_score:
+            best_score = score
+            best_start = start
+            best_end = end
+
+    # Only highlight if at least half the read words matched
+    if best_start != -1 and best_score >= max(1, len(norm_ok) // 2):
+        highlighted = (
+            ar_words[:best_start]
+            + ["<color>" + " ".join(ar_words[best_start:best_end + 1]) + "</color>"]
+            + ar_words[best_end + 1:]
+        )
+        return " ".join(highlighted)
+
     return ar_text
 
 def highlight_turkish_word(text: str, query: str) -> str:
