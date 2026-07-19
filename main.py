@@ -313,10 +313,14 @@ async def analiz_et(
                         if m_ar_text.startswith(bismillah):
                             m_ar_text = m_ar_text[len(bismillah):].strip()
                             
+                    # Benzer ayetlerde de okunan kısmı vurgula
+                    m_arapca_vurgulu = highlight_read_portion(m_ar_text, okunan_kelimeler) if okunan_kelimeler else m_ar_text
+                            
                     similar_card = {
                         "sure_no": m_sure,
                         "ayet_no": m_ayet,
                         "arapca": m_ar_text,
+                        "arapca_vurgulu": m_arapca_vurgulu,
                         "meal": m_db.get("tr", ""),
                         "sure_adi": SURE_ADLARI.get(m_sure, ""),
                         "sayfa_no": min(604, m_db.get("page", 1)),
