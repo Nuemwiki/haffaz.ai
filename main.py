@@ -5,7 +5,7 @@ import os
 import json
 from pydantic import BaseModel
 import re
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime, timedelta
@@ -171,9 +171,6 @@ def gunun_ayeti():
         "ref": "Bakara Suresi, 153. Ayet"
     }
 
-def temizle_harakat(text):
-    return re.sub(r'[\u064B-\u065F\u0670]', '', text)
-
 def clean_json(text):
     text = text.strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
@@ -192,12 +189,9 @@ def norm_quran_word_list(text: str) -> List[str]:
     t = re.sub(r'\s+', ' ', t).strip()
     return [w for w in t.split() if len(w) >= 1]
 
-def highlight_read_portion(full_text, read_portion):
-    # Basit bir vurgulama mekanizması (Markdown bold)
-    # Burada kelime eşleşmesi veya regex ile yapılabilir
-    return full_text.replace(read_portion, f"**{read_portion}**")
-
 def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
+    """
+    Kullanıcının kesin talimatlarına göre çalışan %100 deterministik Kur'an araması:
     1. Birden fazla kelime okunduysa (örn: "يا ايها الانسان" -> 3 kelime):
        Bu kelimelerin HEPSİNİ müstakil kelime olarak içeren TÜM ayetler bulunur.
        Sadece 1 kelimesi ("انسان") geçiyor diye alakasız ayetleri KESİNLİKLE eklemez.
