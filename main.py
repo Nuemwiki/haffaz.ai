@@ -45,15 +45,14 @@ class QuranAnalysis(BaseModel):
 # Arapça metin ve Türkçe meal verilerini modelin üretmesini engelleyerek 
 # çıktı token sayısını %95 oranında azaltıyoruz. Model sadece koordinatları döndürecek.
 system_instruction = """
-GÖREV: Sesteki Kur'an ayetini/ayetlerini veya kısa okuyuş parçalarını (lafızları) bul ve koordinatlarını döndür.
-KURALLAR:
-1. Yalnızca en iyi eşleşen TEK bir ana ayet döndür. Ayet yoksa boş nesne {} dön.
-2. Kısa Okuyuşlar / Lafızlar: Seste sadece 1-3 kelimelik çok kısa bir ayet başlangıcı veya okuyuş parçası (Örn: "ya eyyühelinsanü" / "يَا أَيُّهَا الْإِنسَانُ", "veylün yevmeizin", "hel etâ", vb.) duyulsa bile, bunu Kur'an'daki en uygun eşleşen ayetle mutlaka eşleştir.
-3. Müteşabihler (Benzer Ayetler): Lafzen karıştırılabilecek, ortak kelime grupları barındıran veya başlangıcı/sonu benzeşen TÜM güçlü müteşabih (benzer) ayetleri tara ve "sure_no:ayet_no" formatında (Örn: "82:6") "mutesabihler" dizisinde listele. Maksimum 50 adet.
-4. Seste hiçbir şekilde Kur'an lafızı/ayeti okunmuyorsa boş nesne {} dön.
-5. Sadece JSON dön, Arapça/meal metni veya açıklama ekleme.
-6. okunan_kelimeler alanına: seste duyulan Arapça kelimelerin SADECE KOK HALİNİ (harekesiz, sade Arapça) yaz. Örneğin seste "bismillahirrahmanirrahim" duyulduysa "بسم الله الرحمن الرحيم" yaz. Sadece duyulan kelimeleri yaz, tam ayeti yazma.
-ÇIKTI ŞABLONU: {"sure_no": 82, "ayet_no": 6, "okunan_kelimeler": "يا ايها الانسان", "mutesabihler": ["84:6"]}
+GÖREV: Sesteki Kur'an ayetini bul, koordinatlarını ve TÜM müteşabih ayetlerini döndür.
+KURAL:
+1. En iyi eşleşen TEK ana ayet. Ayet yoksa {} dön.
+2. 1-3 kelimelik kısa lafız bile duyulsa mutlaka eşleştir.
+3. MÜTEŞABİHLER (ÇOK ÖNEMLİ): Ortak kelime grubu, benzer başlangıç/son veya anlam yakınlığı olan TÜM ayetleri "sure:ayet" formatında listele. KAPSAMLI OL - 5 ten fazla varsa hepsini yaz, hiçbirini atlama.
+4. okunan_kelimeler: Sadece duyulan kelimelerin harekesiz Arapça kökü.
+5. Sadece JSON, açıklama ekleme.
+ŞABLON: {"sure_no":2,"ayet_no":255,"okunan_kelimeler":"الله لا اله","mutesabihler":["3:2","3:18","4:87"]}
 """
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
@@ -204,11 +203,10 @@ async def analiz_et(
         content = await file.read()
         mime_type = file.content_type or "audio/m4a"
 
-        # Ask Gemini to find the verses and their similarities using google-genai Client
+        # Ask Gemini to find the verse and ALL similar verses (mutashabihat)
         response = client.models.generate_content(
             model=model_name,
             contents=[
-                "Analiz et. Müteşabihleri bul.",
                 types.Part.from_bytes(
                     data=content,
                     mime_type=mime_type
@@ -216,9 +214,9 @@ async def analiz_et(
             ],
             config=types.GenerateContentConfig(
                 temperature=0.0,
-                max_output_tokens=2500,  # Prevent any model truncation
+                max_output_tokens=800,
                 response_mime_type="application/json",
-                thinking_config=types.ThinkingConfig(thinking_budget=0),  # Disable thinking to avoid token budget exhaustion
+                thinking_config=types.ThinkingConfig(thinking_budget=0),
                 system_instruction=system_instruction
             )
         )
