@@ -45,14 +45,14 @@ class QuranAnalysis(BaseModel):
 # Arapça metin ve Türkçe meal verilerini modelin üretmesini engelleyerek 
 # çıktı token sayısını %95 oranında azaltıyoruz. Model sadece koordinatları döndürecek.
 system_instruction = """
-GÖREV: Sesteki Kur'an ayetini bul, koordinatlarını ve TÜM müteşabih ayetlerini döndür.
-KURAL:
-1. En iyi eşleşen TEK ana ayet. Ayet yoksa {} dön.
-2. 1-3 kelimelik kısa lafız bile duyulsa mutlaka eşleştir.
-3. MÜTEŞABİHLER (ÇOK ÖNEMLİ): Ortak kelime grubu, benzer başlangıç/son veya anlam yakınlığı olan TÜM ayetleri "sure:ayet" formatında listele. KAPSAMLI OL - 5 ten fazla varsa hepsini yaz, hiçbirini atlama.
-4. okunan_kelimeler: Sadece duyulan kelimelerin harekesiz Arapça kökü.
-5. Sadece JSON, açıklama ekleme.
-ŞABLON: {"sure_no":2,"ayet_no":255,"okunan_kelimeler":"الله لا اله","mutesabihler":["3:2","3:18","4:87"]}
+GÖREV: Sesteki Kur'an ayetini bul, koordinatlarını ve LAFZEN MÜTEŞABİH (kelimeleri/kalıpları karıştırılabilecek) ayetlerini döndür.
+KURALLAR:
+1. Sesteki en uygun TEK ana ayeti bul. Kur'an ayeti yoksa {} dön.
+2. 1-3 kelimelik kısa lafız bile okunsa eşleştir.
+3. MÜTEŞABİHLER: Sadece LAFZİ MÜTEŞABİH (ortak kelime kalıbı, başlangıcı/sonu benzeşen) ayetleri "sure:ayet" formatında listele. Sadece konu/anlam benzerliği olan alakasız ayetleri KESİNLİKLE EKLEME. Ana ayetin kendisini dizide tekrar yazma.
+4. okunan_kelimeler: Seste duyulan kelimelerin sade Arapçası.
+5. Sadece geçerli JSON döndür.
+ŞABLON: {"sure_no":2,"ayet_no":255,"okunan_kelimeler":"الله لا اله","mutesabihler":["3:2","20:8","59:23"]}
 """
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
@@ -250,6 +250,8 @@ async def analiz_et(
 
         # --- SAYFA VE KONUM HESAPLAMA & YEREL VERİLERLE ZENGİNLEŞTİRME ---
         final_sonuclar = []
+        seen_keys = set()
+
         for item in sonuclar:
             sure_no = item.get("sure_no")
             ayet_no = item.get("ayet_no")
@@ -259,6 +261,10 @@ async def analiz_et(
 
             # 1. Ana Ayeti Ekle
             key = f"{sure_no}:{ayet_no}"
+            if key in seen_keys:
+                continue
+            seen_keys.add(key)
+
             db_item = quran_db.get(key, {"ar": "", "tr": "", "page": 1, "pos": "orta"})
             
             ar_text = db_item.get("ar", "")
@@ -302,6 +308,9 @@ async def analiz_et(
                 
                 if m_sure and m_ayet:
                     m_key = f"{m_sure}:{m_ayet}"
+                    if m_key in seen_keys:
+                        continue
+                    seen_keys.add(m_key)
                     m_db = quran_db.get(m_key, {"ar": "", "tr": "", "page": 1, "pos": "orta"})
                     
                     m_ar_text = m_db.get("ar", "")
