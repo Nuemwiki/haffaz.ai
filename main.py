@@ -45,14 +45,12 @@ class QuranAnalysis(BaseModel):
 # Arapça metin ve Türkçe meal verilerini modelin üretmesini engelleyerek 
 # çıktı token sayısını %95 oranında azaltıyoruz. Model sadece koordinatları döndürecek.
 system_instruction = """
-GÖREV: Sesteki Kur'an ayetini bul, koordinatlarını ve LAFZEN MÜTEŞABİH (kelimeleri/kalıpları karıştırılabilecek) ayetlerini döndür.
+GÖREV: Sesteki Kur'an ayetini bul ve seste okunan kelimeleri tam olarak yaz.
 KURALLAR:
 1. Sesteki en uygun TEK ana ayeti bul. Kur'an ayeti yoksa {} dön.
-2. 1-3 kelimelik kısa lafız bile okunsa eşleştir.
-3. MÜTEŞABİHLER: Sadece LAFZİ MÜTEŞABİH (ortak kelime kalıbı, başlangıcı/sonu benzeşen) ayetleri "sure:ayet" formatında listele. Sadece konu/anlam benzerliği olan alakasız ayetleri KESİNLİKLE EKLEME. Ana ayetin kendisini dizide tekrar yazma.
-4. okunan_kelimeler: Seste duyulan kelimelerin sade Arapçası.
-5. Sadece geçerli JSON döndür.
-ŞABLON: {"sure_no":2,"ayet_no":255,"okunan_kelimeler":"الله لا اله","mutesabihler":["3:2","20:8","59:23"]}
+2. okunan_kelimeler: Seste duyulan kelimelerin TAMAMINI harekesiz sade Arapça olarak yaz (Örn: "يا ايها الانسان", "فباي الاء ربكما تكذبان"). Sadece 1 kelimesini yazma, okunan lafız grubunu tam yaz.
+3. Sadece geçerli JSON döndür, başka metin ekleme.
+ŞABLON: {"sure_no":82,"ayet_no":6,"okunan_kelimeler":"يا ايها الانسان"}
 """
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
@@ -186,12 +184,12 @@ def clean_json(text):
 
 def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
     """
-    Kullanıcının talimatlarına %100 uyan deterministik Kur'an veritabanı araması:
+    Kullanıcının kesin talimatlarına göre çalışan %100 deterministik Kur'an araması:
     1. Birden fazla kelime okunduysa (örn: "يا ايها الانسان" -> 3 kelime):
        Bu kelimelerin HEPSİNİ birden içeren TÜM ayetler müteşabih olarak bulunur.
-       Sadece 1 kelime tutuyor diye alakasız ayet eklenmez.
+       Sadece 1 kelimesi geçiyor diye ("انسان" gibi) alakasız ayetleri KESİNLİKLE eklemez.
     2. Tek kelime okunduysa (örn: "القارعة"):
-       O kelimenin geçtiği TÜM ayetler müteşabih olarak bulunur.
+       O tek kelimenin geçtiği TÜM ayetleri müteşabih olarak ekler.
     """
     if not okunan_kelimeler or not quran_db:
         return []
@@ -209,6 +207,7 @@ def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ay
 
     matched_pairs = []
     main_key = f"{main_sure}:{main_ayet}"
+    phrase = " ".join(clean_words)
 
     for key, item in quran_db.items():
         if key == main_key:
@@ -218,21 +217,23 @@ def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ay
         norm_ar = temizle_harakat(ar_text)
         
         if len(clean_words) == 1:
-            # TEK KELİME: O tek kelimenin geçtiği tüm ayetleri bul
+            # TEK KELİME OKUNDUYSA: O kelimenin geçtiği tüm ayetleri bul
             target_word = clean_words[0]
             if target_word in norm_ar:
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
         else:
-            # ÇOKLU KELİME: Okunan kelimelerin HEPSİNİN geçtiği ayetleri bul
-            all_matched = True
-            for target_word in clean_words:
-                if target_word not in norm_ar:
-                    all_matched = False
-                    break
-            if all_matched:
+            # ÇOKLU KELİME OKUNDUYSA:
+            # Öncelik 1: Tam sürekli lafız grubu eşleşmesi ("يا ايها الانسان")
+            if phrase in norm_ar:
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
+            else:
+                # Öncelik 2: Okunan kelimelerin HEPSİNİN istisnasız o ayette geçmesi
+                all_matched = all(target_word in norm_ar for target_word in clean_words)
+                if all_matched:
+                    sure_no, ayet_no = map(int, key.split(":"))
+                    matched_pairs.append((sure_no, ayet_no))
                 
     return matched_pairs
 
@@ -343,11 +344,9 @@ async def analiz_et(
             }
             final_sonuclar.append(main_card)
 
-            # 2. Müteşabih Ayetleri (Deterministik Veritabanı + AI Birleşimi) Düz Listeye Ekle
+            # 2. Müteşabih Ayetleri %100 Deterministik Kur'an Veritabanı Araması ile Ekle
             exact_mutashabihs = find_exact_mutashabihat_in_db(okunan_kelimeler, sure_no, ayet_no)
-            mutesabihler_raw = list(item.get("mutesabihler", []))
-            for s_no, a_no in exact_mutashabihs:
-                mutesabihler_raw.append(f"{s_no}:{a_no}")
+            mutesabihler_raw = [f"{s_no}:{a_no}" for s_no, a_no in exact_mutashabihs]
 
             for m in mutesabihler_raw:
                 m_sure, m_ayet = None, None
