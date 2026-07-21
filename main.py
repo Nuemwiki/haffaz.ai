@@ -300,9 +300,21 @@ async def analiz_et(
         for item in sonuclar:
             sure_no = item.get("sure_no")
             ayet_no = item.get("ayet_no")
+            okunan_kelimeler = item.get("okunan_kelimeler", "")
             
             if not sure_no or sure_no == 0: 
                 continue
+
+            # Otomatik Doğrulama: Eğer Gemini'nin önerdiği ana ayet okunan kelimeleri barındırmıyorsa,
+            # ve elimizde deterministik tam uyan ayetler varsa, ilk uyan tam ayeti ana ayet yap!
+            exact_all = find_exact_mutashabihat_in_db(okunan_kelimeler, 0, 0)
+            if exact_all:
+                main_key = f"{sure_no}:{ayet_no}"
+                main_ar = quran_db.get(main_key, {}).get("ar", "")
+                main_words = set(norm_quran_word_list(main_ar))
+                clean_read = norm_quran_word_list(okunan_kelimeler)
+                if clean_read and not all(w in main_words for w in clean_read):
+                    sure_no, ayet_no = exact_all[0]
 
             # 1. Ana Ayeti Ekle
             key = f"{sure_no}:{ayet_no}"
