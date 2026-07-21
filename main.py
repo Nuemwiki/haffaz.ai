@@ -458,8 +458,8 @@ async def limit_durumu(x_user_id: str = Header(None, alias="X-User-ID")):
     return {"kalan": kalan, "limit": GUNLUK_LIMIT_UCRETSIZ}
 
 def temizle_harakat(text: str) -> str:
-    # 1. Dagger Alif (superscript Alif \u0670) -> Standart Alif (\u0627) normalizasyonu
-    text = text.replace('\u0670', '\u0627')
+    # 1. Dagger Alif (\u0670) temizle (Standart Alif ile birleşip الرحمان / الرحمن uyuşmazlığını önler)
+    text = text.replace('\u0670', '')
     # 2. Tashkeel ve tecvid/vakıf işaretlerini temizle
     tashkeel_pattern = re.compile(r'[\u064B-\u065F\u0615-\u061A\u06D6-\u06ED]')
     text = tashkeel_pattern.sub('', text)
@@ -469,6 +469,9 @@ def temizle_harakat(text: str) -> str:
     text = text.replace('\u0629', '\u0647')
     # 5. Elif maksure (ى) -> Ya (ي) normalizasyonu
     text = text.replace('\u0649', '\u064A')
+    # 6. Uthmani imla varyasyonlarını standartlaştır
+    text = text.replace('الرحمان', 'الرحمن')
+    text = text.replace('الصلوة', 'الصلاة').replace('الزكوة', 'الزكاة').replace('الحيوة', 'الحياة')
     return text
 
 def tr_kucuk(text: str) -> str:
