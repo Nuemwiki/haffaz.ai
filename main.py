@@ -22,7 +22,7 @@ model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash") # En güncel model va
 print("====================================================")
 print("SISTEM YUKLENDI")
 print("Model:", model_name)
-print("API Key:", api_key[:15] + "..." if api_key else "None")
+print("API Key: [YUKLENDI]")
 print("====================================================")
 
 if not api_key:
