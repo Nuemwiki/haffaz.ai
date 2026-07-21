@@ -182,58 +182,50 @@ def clean_json(text):
     if text.endswith("```"): text = text[:-3]
     return text.strip()
 
+def norm_quran_word_list(text: str) -> List[str]:
+    t = temizle_harakat(text)
+    t = t.replace('ياايها', 'يا ايها').replace('يأيها', 'يا ايها')
+    t = ''.join(c if (u'\u0621' <= c <= u'\u064A' or c == ' ') else '' for c in t)
+    t = re.sub(r'\s+', ' ', t).strip()
+    return [w for w in t.split() if len(w) >= 2]
+
 def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
     """
     Kullanıcının kesin talimatlarına göre çalışan %100 deterministik Kur'an araması:
     1. Birden fazla kelime okunduysa (örn: "يا ايها الانسان" -> 3 kelime):
-       Bu kelimelerin HEPSİNİ birden içeren TÜM ayetler müteşabih olarak bulunur.
-       Sadece 1 kelimesi geçiyor diye ("انسان" gibi) alakasız ayetleri KESİNLİKLE eklemez.
+       Bu kelimelerin HEPSİNİ müstakil kelime olarak içeren TÜM ayetler bulunur.
+       Sadece 1 kelimesi ("انسان") geçiyor diye alakasız ayetleri KESİNLİKLE eklemez.
     2. Tek kelime okunduysa (örn: "القارعة"):
        O tek kelimenin geçtiği TÜM ayetleri müteşabih olarak ekler.
     """
     if not okunan_kelimeler or not quran_db:
         return []
         
-    raw_words = okunan_kelimeler.strip().split()
-    clean_words = []
-    for w in raw_words:
-        norm_w = temizle_harakat(w)
-        norm_w = "".join(c for c in norm_w if u"\u0621" <= c <= u"\u064A")
-        if len(norm_w) >= 2:
-            clean_words.append(norm_w)
-            
+    clean_words = norm_quran_word_list(okunan_kelimeler)
     if not clean_words:
         return []
 
     matched_pairs = []
     main_key = f"{main_sure}:{main_ayet}"
-    phrase = " ".join(clean_words)
 
     for key, item in quran_db.items():
         if key == main_key:
             continue
             
         ar_text = item.get("ar", "")
-        norm_ar = temizle_harakat(ar_text)
+        verse_words_set = set(norm_quran_word_list(ar_text))
         
         if len(clean_words) == 1:
-            # TEK KELİME OKUNDUYSA: O kelimenin geçtiği tüm ayetleri bul
+            # TEK KELİME OKUNDUYSA: O kelimenin tam kelime olarak geçtiği tüm ayetleri bul
             target_word = clean_words[0]
-            if target_word in norm_ar:
+            if target_word in verse_words_set:
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
         else:
-            # ÇOKLU KELİME OKUNDUYSA:
-            # Öncelik 1: Tam sürekli lafız grubu eşleşmesi ("يا ايها الانسان")
-            if phrase in norm_ar:
+            # ÇOKLU KELİME OKUNDUYSA: Okunan kelimelerin HEPSİNİN geçtiği ayetleri bul
+            if all(target_word in verse_words_set for target_word in clean_words):
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
-            else:
-                # Öncelik 2: Okunan kelimelerin HEPSİNİN istisnasız o ayette geçmesi
-                all_matched = all(target_word in norm_ar for target_word in clean_words)
-                if all_matched:
-                    sure_no, ayet_no = map(int, key.split(":"))
-                    matched_pairs.append((sure_no, ayet_no))
                 
     return matched_pairs
 
