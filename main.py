@@ -45,11 +45,11 @@ class QuranAnalysis(BaseModel):
 # Arapça metin ve Türkçe meal verilerini modelin üretmesini engelleyerek 
 # çıktı token sayısını %95 oranında azaltıyoruz. Model sadece koordinatları döndürecek.
 system_instruction = """
-GÖREV: Sesteki Kur'an ayetini bul ve seste okunan kelimeleri tam olarak yaz.
+GÖREV: Sesteki Kur'an okuyuşunu veya lafızlarını tespit et ve koordinatlarını yaz.
 KURALLAR:
-1. Sesteki en uygun TEK ana ayeti bul. Kur'an ayeti yoksa {} dön.
-2. okunan_kelimeler: Seste duyulan kelimelerin TAMAMINI harekesiz sade Arapça olarak yaz (Örn: "يا ايها الانسان", "فباي الاء ربكما تكذبان"). Sadece 1 kelimesini yazma, okunan lafız grubunu tam yaz.
-3. Sadece geçerli JSON döndür, başka metin ekleme.
+1. Seste kısa bile olsa bir Kur'an lafzı/ayeti duyulduysa mutlaka en uygun ana ayeti ("sure_no" ve "ayet_no") bul. Sadece sesteki gürültü/konuşma Kur'an dışıysa {} dön.
+2. okunan_kelimeler: Seste duyulan kelimelerin TAMAMINI harekesiz sade Arapça olarak yaz (Örn: "يا ايها الانسان").
+3. Sadece geçerli JSON döndür, başka açıklama ekleme.
 ŞABLON: {"sure_no":82,"ayet_no":6,"okunan_kelimeler":"يا ايها الانسان"}
 """
 
@@ -171,6 +171,9 @@ def gunun_ayeti():
         "ref": "Bakara Suresi, 153. Ayet"
     }
 
+def temizle_harakat(text):
+    return re.sub(r'[\u064B-\u065F\u0670]', '', text)
+
 def clean_json(text):
     text = text.strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
@@ -187,11 +190,14 @@ def norm_quran_word_list(text: str) -> List[str]:
     t = t.replace('ياايها', 'يا ايها').replace('يأيها', 'يا ايها')
     t = ''.join(c if (u'\u0621' <= c <= u'\u064A' or c == ' ') else '' for c in t)
     t = re.sub(r'\s+', ' ', t).strip()
-    return [w for w in t.split() if len(w) >= 2]
+    return [w for w in t.split() if len(w) >= 1]
+
+def highlight_read_portion(full_text, read_portion):
+    # Basit bir vurgulama mekanizması (Markdown bold)
+    # Burada kelime eşleşmesi veya regex ile yapılabilir
+    return full_text.replace(read_portion, f"**{read_portion}**")
 
 def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
-    """
-    Kullanıcının kesin talimatlarına göre çalışan %100 deterministik Kur'an araması:
     1. Birden fazla kelime okunduysa (örn: "يا ايها الانسان" -> 3 kelime):
        Bu kelimelerin HEPSİNİ müstakil kelime olarak içeren TÜM ayetler bulunur.
        Sadece 1 kelimesi ("انسان") geçiyor diye alakasız ayetleri KESİNLİKLE eklemez.
