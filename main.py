@@ -531,7 +531,8 @@ def highlight_read_portion(ar_text: str, okunan_kelimeler: str) -> str:
     def norm(t):
         # Harekesiz, sade harf normalize
         t = temizle_harakat(t)
-        return "".join(c for c in t if '\u0600' <= c <= '\u06FF')
+        t = t.replace('ياايها', 'يا ايها').replace('يأيها', 'يا ايها')
+        return "".join(c for c in t if u"\u0621" <= c <= u"\u064A")
 
     ar_words = ar_text.split()
     ok_words = okunan_kelimeler.strip().split()
