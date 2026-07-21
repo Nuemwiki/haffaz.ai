@@ -184,6 +184,58 @@ def clean_json(text):
     if text.endswith("```"): text = text[:-3]
     return text.strip()
 
+def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
+    """
+    Kullanıcının talimatlarına %100 uyan deterministik Kur'an veritabanı araması:
+    1. Birden fazla kelime okunduysa (örn: "يا ايها الانسان" -> 3 kelime):
+       Bu kelimelerin HEPSİNİ birden içeren TÜM ayetler müteşabih olarak bulunur.
+       Sadece 1 kelime tutuyor diye alakasız ayet eklenmez.
+    2. Tek kelime okunduysa (örn: "القارعة"):
+       O kelimenin geçtiği TÜM ayetler müteşabih olarak bulunur.
+    """
+    if not okunan_kelimeler or not quran_db:
+        return []
+        
+    raw_words = okunan_kelimeler.strip().split()
+    clean_words = []
+    for w in raw_words:
+        norm_w = temizle_harakat(w)
+        norm_w = "".join(c for c in norm_w if u"\u0621" <= c <= u"\u064A")
+        if len(norm_w) >= 2:
+            clean_words.append(norm_w)
+            
+    if not clean_words:
+        return []
+
+    matched_pairs = []
+    main_key = f"{main_sure}:{main_ayet}"
+
+    for key, item in quran_db.items():
+        if key == main_key:
+            continue
+            
+        ar_text = item.get("ar", "")
+        norm_ar = temizle_harakat(ar_text)
+        
+        if len(clean_words) == 1:
+            # TEK KELİME: O tek kelimenin geçtiği tüm ayetleri bul
+            target_word = clean_words[0]
+            if target_word in norm_ar:
+                sure_no, ayet_no = map(int, key.split(":"))
+                matched_pairs.append((sure_no, ayet_no))
+        else:
+            # ÇOKLU KELİME: Okunan kelimelerin HEPSİNİN geçtiği ayetleri bul
+            all_matched = True
+            for target_word in clean_words:
+                if target_word not in norm_ar:
+                    all_matched = False
+                    break
+            if all_matched:
+                sure_no, ayet_no = map(int, key.split(":"))
+                matched_pairs.append((sure_no, ayet_no))
+                
+    return matched_pairs
+
 @app.post("/analiz-et")
 async def analiz_et(
     file: UploadFile = File(...), 
@@ -291,8 +343,12 @@ async def analiz_et(
             }
             final_sonuclar.append(main_card)
 
-            # 2. Müteşabih Ayetleri de Ayrı Kart Olarak Düz Listeye Ekle (Eskisi gibi alt alta listelenmesi için)
-            mutesabihler_raw = item.get("mutesabihler", [])
+            # 2. Müteşabih Ayetleri (Deterministik Veritabanı + AI Birleşimi) Düz Listeye Ekle
+            exact_mutashabihs = find_exact_mutashabihat_in_db(okunan_kelimeler, sure_no, ayet_no)
+            mutesabihler_raw = list(item.get("mutesabihler", []))
+            for s_no, a_no in exact_mutashabihs:
+                mutesabihler_raw.append(f"{s_no}:{a_no}")
+
             for m in mutesabihler_raw:
                 m_sure, m_ayet = None, None
                 if isinstance(m, str) and ":" in m:
