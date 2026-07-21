@@ -192,19 +192,21 @@ def norm_quran_word_list(text: str) -> List[str]:
 def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
     """
     Kullanıcının kesin talimatlarına göre çalışan %100 deterministik Kur'an araması:
-    1. Birden fazla kelime okunduysa (örn: "يا ايها الانسان" -> 3 kelime):
-       Bu kelimelerin HEPSİNİ müstakil kelime olarak içeren TÜM ayetler bulunur.
-       Sadece 1 kelimesi ("انسان") geçiyor diye alakasız ayetleri KESİNLİKLE eklemez.
+    1. Birden fazla kelime okunduysa:
+       Boşluk/birlik bağımsız (norm_ns) olarak okunan lafız grubunun HEPSİNİ içeren TÜM ayetler bulunur.
     2. Tek kelime okunduysa (örn: "القارعة"):
        O tek kelimenin geçtiği TÜM ayetleri müteşabih olarak ekler.
     """
     if not okunan_kelimeler or not quran_db:
         return []
-        
-    clean_words = norm_quran_word_list(okunan_kelimeler)
-    if not clean_words:
+
+    norm_ns = lambda t: "".join(c for c in temizle_harakat(t) if u"\u0621" <= c <= u"\u064A")
+    
+    clean_read_ns = norm_ns(okunan_kelimeler)
+    if not clean_read_ns:
         return []
 
+    clean_words = norm_quran_word_list(okunan_kelimeler)
     matched_pairs = []
     main_key = f"{main_sure}:{main_ayet}"
 
@@ -213,19 +215,27 @@ def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ay
             continue
             
         ar_text = item.get("ar", "")
-        verse_words_set = set(norm_quran_word_list(ar_text))
+        verse_ns = norm_ns(ar_text)
         
         if len(clean_words) == 1:
-            # TEK KELİME OKUNDUYSA: O kelimenin tam kelime olarak geçtiği tüm ayetleri bul
+            # TEK KELİME OKUNDUYSA: O kelimenin geçtiği tüm ayetleri bul
             target_word = clean_words[0]
+            verse_words_set = set(norm_quran_word_list(ar_text))
             if target_word in verse_words_set:
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
         else:
-            # ÇOKLU KELİME OKUNDUYSA: Okunan kelimelerin HEPSİNİN geçtiği ayetleri bul
-            if all(target_word in verse_words_set for target_word in clean_words):
+            # ÇOKLU KELİME OKUNDUYSA:
+            # Öncelik 1: okunan lafız grubunun (boşluksuz/birleşik) tam olarak ayet metninde geçmesi
+            if clean_read_ns in verse_ns:
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
+            else:
+                # Öncelik 2: okunan kelimelerin hepsinin ayette bulunması
+                verse_words_set = set(norm_quran_word_list(ar_text))
+                if all(target_word in verse_words_set for target_word in clean_words):
+                    sure_no, ayet_no = map(int, key.split(":"))
+                    matched_pairs.append((sure_no, ayet_no))
                 
     return matched_pairs
 
@@ -523,56 +533,36 @@ def highlight_arabic_word(ar_text: str, query: str) -> str:
     return ar_text
 
 def highlight_read_portion(ar_text: str, okunan_kelimeler: str) -> str:
-    """Sesle okunan kelime grubunu ayet metninde bulup <color> tag ile işaretle.
-    Multi-word sliding window ile en iyi eşleşen sürekli aralığı vurgular."""
+    """Sesle okunan kelime grubunu ayet metninde bulup <color> tag ile işaretle."""
     if not okunan_kelimeler or not ar_text:
         return ar_text
 
-    def norm(t):
-        # Harekesiz, sade harf normalize
-        t = temizle_harakat(t)
-        t = t.replace('ياايها', 'يا ايها').replace('يأيها', 'يا ايها')
-        return "".join(c for c in t if u"\u0621" <= c <= u"\u064A")
+    norm_ns = lambda t: "".join(c for c in temizle_harakat(t) if u"\u0621" <= c <= u"\u064A")
+    clean_read_ns = norm_ns(okunan_kelimeler)
+    if not clean_read_ns:
+        return ar_text
 
     ar_words = ar_text.split()
-    ok_words = okunan_kelimeler.strip().split()
-    if not ok_words:
-        return ar_text
-
-    norm_ar = [norm(w) for w in ar_words]
-    norm_ok = [norm(w) for w in ok_words]
-    
-    # Remove empty normalized tokens
-    norm_ok = [w for w in norm_ok if w]
-    if not norm_ok:
-        return ar_text
-
-    n = len(norm_ar)
-    k = len(norm_ok)
+    n = len(ar_words)
 
     best_start = -1
     best_end = -1
-    best_score = -1
+    best_diff = 99999
 
-    # Sliding window of size k over the ayet words
     for start in range(n):
-        window = norm_ar[start:start + k]
-        if not window:
-            break
-        # Count matching words (allowing partial prefix match)
-        matched = 0
-        for wa, wo in zip(window, norm_ok):
-            if wa == wo or wa.startswith(wo) or wo.startswith(wa):
-                matched += 1
-        score = matched
-        end = min(start + k - 1, n - 1)
-        if score > best_score:
-            best_score = score
-            best_start = start
-            best_end = end
+        acc = ""
+        for end in range(start, n):
+            acc += norm_ns(ar_words[end])
+            if clean_read_ns in acc or acc in clean_read_ns:
+                diff = abs(len(acc) - len(clean_read_ns))
+                if diff < best_diff:
+                    best_diff = diff
+                    best_start = start
+                    best_end = end
+            if len(acc) > len(clean_read_ns) + 15:
+                break
 
-    # Only highlight if at least half the read words matched
-    if best_start != -1 and best_score >= max(1, len(norm_ok) // 2):
+    if best_start != -1:
         highlighted = (
             ar_words[:best_start]
             + ["<color>" + " ".join(ar_words[best_start:best_end + 1]) + "</color>"]
