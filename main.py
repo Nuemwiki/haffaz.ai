@@ -171,6 +171,20 @@ def gunun_ayeti():
         "ref": "Bakara Suresi, 153. Ayet"
     }
 
+def temizle_besmele(text: str, sure_no: int, ayet_no: int) -> str:
+    """Fatiha (Sure 1) hariç, 1. ayetlerin başındaki Besmeleyi temizler."""
+    if sure_no != 1 and ayet_no == 1 and text:
+        bisms = [
+            "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+            "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+            "بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ",
+            "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
+        ]
+        for b in bisms:
+            if text.startswith(b):
+                return text[len(b):].strip()
+    return text
+
 def clean_json(text):
     text = text.strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
@@ -336,10 +350,7 @@ async def analiz_et(
             
             ar_text = db_item.get("ar", "")
             # Fatiha (Sure 1) hariç, 1. ayetlerin başındaki besmeleyi temizle
-            if sure_no != 1 and ayet_no == 1:
-                bismillah = "\u0628\u0650\u0633\u0652\u0645\u0650 \u0671\u0644\u0644\u0651\u064e\u0647\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0670\u0646\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650"
-                if ar_text.startswith(bismillah):
-                    ar_text = ar_text[len(bismillah):].strip()
+            ar_text = temizle_besmele(ar_text, sure_no, ayet_no)
             
             # Okunan kısmı vurgula
             okunan_kelimeler = item.get("okunan_kelimeler", "")
@@ -384,10 +395,7 @@ async def analiz_et(
                     
                     m_ar_text = m_db.get("ar", "")
                     # Fatiha (Sure 1) hariç, 1. ayetlerin başındaki besmeleyi temizle
-                    if m_sure != 1 and m_ayet == 1:
-                        bismillah = "\u0628\u0650\u0633\u0652\u0645\u0650 \u0671\u0644\u0644\u0651\u064e\u0647\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0670\u0646\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650"
-                        if m_ar_text.startswith(bismillah):
-                            m_ar_text = m_ar_text[len(bismillah):].strip()
+                    m_ar_text = temizle_besmele(m_ar_text, m_sure, m_ayet)
                             
                     # Benzer ayetlerde de okunan kısmı vurgula
                     m_arapca_vurgulu = highlight_read_portion(m_ar_text, okunan_kelimeler) if okunan_kelimeler else m_ar_text
