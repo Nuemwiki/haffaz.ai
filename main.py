@@ -171,20 +171,6 @@ def gunun_ayeti():
         "ref": "Bakara Suresi, 153. Ayet"
     }
 
-def temizle_besmele(text: str, sure_no: int, ayet_no: int) -> str:
-    """Fatiha (Sure 1) hariç, 1. ayetlerin başındaki Besmeleyi temizler."""
-    if sure_no != 1 and ayet_no == 1 and text:
-        bisms = [
-            "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-            "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
-            "بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ",
-            "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
-        ]
-        for b in bisms:
-            if text.startswith(b):
-                return text[len(b):].strip()
-    return text
-
 def clean_json(text):
     text = text.strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
@@ -349,8 +335,6 @@ async def analiz_et(
             db_item = quran_db.get(key, {"ar": "", "tr": "", "page": 1, "pos": "orta"})
             
             ar_text = db_item.get("ar", "")
-            # Fatiha (Sure 1) hariç, 1. ayetlerin başındaki besmeleyi temizle
-            ar_text = temizle_besmele(ar_text, sure_no, ayet_no)
             
             # Okunan kısmı vurgula
             okunan_kelimeler = item.get("okunan_kelimeler", "")
@@ -394,8 +378,6 @@ async def analiz_et(
                     m_db = quran_db.get(m_key, {"ar": "", "tr": "", "page": 1, "pos": "orta"})
                     
                     m_ar_text = m_db.get("ar", "")
-                    # Fatiha (Sure 1) hariç, 1. ayetlerin başındaki besmeleyi temizle
-                    m_ar_text = temizle_besmele(m_ar_text, m_sure, m_ayet)
                             
                     # Benzer ayetlerde de okunan kısmı vurgula
                     m_arapca_vurgulu = highlight_read_portion(m_ar_text, okunan_kelimeler) if okunan_kelimeler else m_ar_text
