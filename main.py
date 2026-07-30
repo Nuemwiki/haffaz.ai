@@ -189,24 +189,27 @@ def norm_quran_word_list(text: str) -> List[str]:
     t = re.sub(r'\s+', ' ', t).strip()
     return [w for w in t.split() if len(w) >= 1]
 
+bismillah_words = {'بسم', 'الله', 'الرحمن', 'الرحيم'}
+
 def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
     """
     Kullanıcının kesin talimatlarına göre çalışan %100 deterministik Kur'an araması:
     1. Birden fazla kelime okunduysa:
-       Boşluk/birlik bağımsız (norm_ns) olarak okunan lafız grubunun HEPSİNİ içeren TÜM ayetler bulunur.
+       Besmele harici çekirdek kelime grubunun HEPSİNİ içeren TÜM müteşabih ayetler bulunur.
     2. Tek kelime okunduysa (örn: "القارعة"):
        O tek kelimenin geçtiği TÜM ayetleri müteşabih olarak ekler.
     """
     if not okunan_kelimeler or not quran_db:
         return []
 
-    norm_ns = lambda t: "".join(c for c in temizle_harakat(t) if u"\u0621" <= c <= u"\u064A")
-    
-    clean_read_ns = norm_ns(okunan_kelimeler)
-    if not clean_read_ns:
+    q_words = norm_quran_word_list(okunan_kelimeler)
+    if not q_words:
         return []
 
-    clean_words = norm_quran_word_list(okunan_kelimeler)
+    # Besmele kelimelerini çekirdek eşleşme grubundan çıkar (tüm 1. ayetlerin uyuşmasını önler)
+    core_words = [w for w in q_words if w not in bismillah_words]
+    search_words = core_words if core_words else q_words
+
     matched_pairs = []
     main_key = f"{main_sure}:{main_ayet}"
 
@@ -215,27 +218,17 @@ def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ay
             continue
             
         ar_text = item.get("ar", "")
-        verse_ns = norm_ns(ar_text)
+        verse_words_set = set(norm_quran_word_list(ar_text))
         
-        if len(clean_words) == 1:
-            # TEK KELİME OKUNDUYSA: O kelimenin geçtiği tüm ayetleri bul
-            target_word = clean_words[0]
-            verse_words_set = set(norm_quran_word_list(ar_text))
+        if len(search_words) == 1:
+            target_word = search_words[0]
             if target_word in verse_words_set:
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
         else:
-            # ÇOKLU KELİME OKUNDUYSA:
-            # Öncelik 1: okunan lafız grubunun (boşluksuz/birleşik) tam olarak ayet metninde geçmesi
-            if clean_read_ns in verse_ns:
+            if all(target_word in verse_words_set for target_word in search_words):
                 sure_no, ayet_no = map(int, key.split(":"))
                 matched_pairs.append((sure_no, ayet_no))
-            else:
-                # Öncelik 2: okunan kelimelerin hepsinin ayette bulunması
-                verse_words_set = set(norm_quran_word_list(ar_text))
-                if all(target_word in verse_words_set for target_word in clean_words):
-                    sure_no, ayet_no = map(int, key.split(":"))
-                    matched_pairs.append((sure_no, ayet_no))
                 
     return matched_pairs
 
@@ -475,8 +468,8 @@ def temizle_harakat(text: str) -> str:
     # 2. Tashkeel ve tecvid/vakıf işaretlerini temizle
     tashkeel_pattern = re.compile(r'[\u064B-\u065F\u0615-\u061A\u06D6-\u06ED]')
     text = tashkeel_pattern.sub('', text)
-    # 3. Elif harflerini normalize et (Vasla, hemzeli elif vb. -> sade elif)
-    text = text.replace('\u0622', '\u0627').replace('\u0623', '\u0627').replace('\u0625', '\u0627').replace('\u0671', '\u0627')
+    # 3. Vasla (ٱ) ve Maddah (آ) harflerini normalize et (Hemzeleri أ, إ koru - Hurufat ile Elem vb. karışmasını önler)
+    text = text.replace('\u0622', '\u0627').replace('\u0671', '\u0627')
     # 4. Te marbuta (ة) -> He (ه) normalizasyonu
     text = text.replace('\u0629', '\u0647')
     # 5. Elif maksure (ى) -> Ya (ي) normalizasyonu
