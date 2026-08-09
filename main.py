@@ -158,18 +158,103 @@ app.add_middleware(
 def home():
     return {"durum": "Hafiz AI - Konum Modu Aktif", "model": model_name, "db_loaded": len(quran_db) > 0}
 
-@app.get("/gunun-ayeti")
-def gunun_ayeti():
+AYET_DEPOSU_FILE = "ayet_deposu.json"
+AYET_CONFIG_FILE = "gunun_ayeti_config.json"
+ADMIN_SECRET = os.getenv("ADMIN_SECRET", "haffaz-admin-2025")
+
+def load_ayet_deposu():
     try:
-        if os.path.exists("gunun_ayeti.json"):
-            with open("gunun_ayeti.json", "r", encoding="utf-8") as f:
+        if os.path.exists(AYET_DEPOSU_FILE):
+            with open(AYET_DEPOSU_FILE, "r", encoding="utf-8") as f:
                 return json.load(f)
     except Exception:
         pass
+    return []
+
+def load_ayet_config():
+    try:
+        if os.path.exists(AYET_CONFIG_FILE):
+            with open(AYET_CONFIG_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {"manual_override": None}
+
+def save_ayet_config(config: dict):
+    with open(AYET_CONFIG_FILE, "w", encoding="utf-8") as f:
+        json.dump(config, f, ensure_ascii=False, indent=2)
+
+@app.get("/gunun-ayeti")
+def gunun_ayeti():
+    # 1. Manuel override varsa onu döndür
+    config = load_ayet_config()
+    if config.get("manual_override"):
+        return config["manual_override"]
+
+    # 2. Otomatik: bugünün tarihine göre depodan ayet seç
+    deposu = load_ayet_deposu()
+    if deposu:
+        gun_indeksi = datetime.now().timetuple().tm_yday  # Yılın kaçıncı günü (1-365)
+        ayet = deposu[gun_indeksi % len(deposu)]
+        return ayet
+
+    # 3. Fallback (depo boşsa)
     return {
         "text": "Şüphesiz Allah sabredenlerle beraberdir.",
-        "ref": "Bakara Suresi, 153. Ayet"
+        "ref": "Bakara Suresi, 153. Ayet",
+        "sure_no": 2,
+        "ayet_no": 153
     }
+
+# --- ADMIN ENDPOINT'LERİ (Build Almadan Günün Ayetini Yönet) ---
+
+class AyetOverride(BaseModel):
+    text: str
+    ref: str
+    sure_no: Optional[int] = None
+    ayet_no: Optional[int] = None
+
+@app.post("/admin/gunun-ayeti")
+def admin_set_gunun_ayeti(ayet: AyetOverride, secret: str = Query(...)):
+    """Manuel olarak günün ayetini ayarlar. Boş bırakmak için /admin/gunun-ayeti/sifirla kullan."""
+    if secret != ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Yetkisiz erişim.")
+    config = load_ayet_config()
+    config["manual_override"] = {
+        "text": ayet.text,
+        "ref": ayet.ref,
+        "sure_no": ayet.sure_no,
+        "ayet_no": ayet.ayet_no
+    }
+    save_ayet_config(config)
+    return {"durum": "Günün ayeti manuel olarak güncellendi.", "ayet": config["manual_override"]}
+
+@app.delete("/admin/gunun-ayeti/sifirla")
+def admin_sifirla_gunun_ayeti(secret: str = Query(...)):
+    """Manuel override'ı kaldırır, otomatik rotasyona geri döner."""
+    if secret != ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Yetkisiz erişim.")
+    config = load_ayet_config()
+    config["manual_override"] = None
+    save_ayet_config(config)
+    return {"durum": "Manuel override kaldırıldı. Otomatik rotasyona dönüldü."}
+
+@app.get("/admin/ayet-deposu")
+def admin_ayet_deposu(secret: str = Query(...)):
+    """Depodaki tüm ayetleri listeler."""
+    if secret != ADMIN_SECRET:
+        raise HTTPException(status_code=403, detail="Yetkisiz erişim.")
+    deposu = load_ayet_deposu()
+    bugun = datetime.now().timetuple().tm_yday
+    aktif_indeks = bugun % len(deposu) if deposu else 0
+    return {
+        "toplam_ayet": len(deposu),
+        "bugunun_indeksi": aktif_indeks,
+        "bugunun_otomatik_ayeti": deposu[aktif_indeks] if deposu else None,
+        "manual_override": load_ayet_config().get("manual_override"),
+        "ayetler": deposu
+    }
+
 
 def clean_json(text):
     text = text.strip()
