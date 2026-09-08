@@ -189,13 +189,26 @@ def gunun_ayeti():
     # 1. Manuel override varsa onu döndür
     config = load_ayet_config()
     if config.get("manual_override"):
-        return config["manual_override"]
+        res = dict(config["manual_override"])
+        s_no = res.get("sure_no")
+        a_no = res.get("ayet_no")
+        if s_no and a_no and not res.get("arabic"):
+            key = f"{s_no}:{a_no}"
+            if key in quran_db:
+                res["arabic"] = quran_db[key].get("ar", "")
+        return res
 
     # 2. Otomatik: bugünün tarihine göre depodan ayet seç
     deposu = load_ayet_deposu()
     if deposu:
         gun_indeksi = datetime.now().timetuple().tm_yday  # Yılın kaçıncı günü (1-365)
-        ayet = deposu[gun_indeksi % len(deposu)]
+        ayet = dict(deposu[gun_indeksi % len(deposu)])
+        s_no = ayet.get("sure_no")
+        a_no = ayet.get("ayet_no")
+        if s_no and a_no and not ayet.get("arabic"):
+            key = f"{s_no}:{a_no}"
+            if key in quran_db:
+                ayet["arabic"] = quran_db[key].get("ar", "")
         return ayet
 
     # 3. Fallback (depo boşsa)
@@ -205,6 +218,19 @@ def gunun_ayeti():
         "sure_no": 2,
         "ayet_no": 153
     }
+
+@app.get("/ayet-deposu")
+def public_ayet_deposu():
+    """Mobil uygulama ve widget'ın dinamik havuz senkronizasyonu için tüm ayet deposunu döner."""
+    deposu = load_ayet_deposu()
+    for item in deposu:
+        s_no = item.get("sure_no")
+        a_no = item.get("ayet_no")
+        if s_no and a_no and not item.get("arabic"):
+            key = f"{s_no}:{a_no}"
+            if key in quran_db:
+                item["arabic"] = quran_db[key].get("ar", "")
+    return deposu
 
 # --- ADMIN ENDPOINT'LERİ (Build Almadan Günün Ayetini Yönet) ---
 
