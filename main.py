@@ -302,6 +302,22 @@ def norm_quran_word_list(text: str) -> List[str]:
 
 bismillah_words = {'بسم', 'الله', 'الرحمن', 'الرحيم'}
 
+HURUF_MUKATTAA_MAP = {
+    'الم': [(2, 1), (3, 1), (29, 1), (30, 1), (31, 1), (32, 1)],
+    'الر': [(10, 1), (11, 1), (12, 1), (14, 1), (15, 1)],
+    'المر': [(13, 1)],
+    'طسم': [(26, 1), (28, 1)],
+    'طس': [(27, 1)],
+    'طه': [(20, 1)],
+    'يس': [(36, 1)],
+    'ص': [(38, 1)],
+    'حم': [(40, 1), (41, 1), (42, 1), (43, 1), (44, 1), (45, 1), (46, 1)],
+    'عسق': [(42, 2)],
+    'ق': [(50, 1)],
+    'ن': [(68, 1)],
+    'كهيعص': [(19, 1)],
+}
+
 def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ayet: int) -> List[Tuple[int, int]]:
     """
     Kullanıcının kesin talimatlarına göre çalışan %100 deterministik Kur'an araması:
@@ -309,6 +325,8 @@ def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ay
        Besmele harici çekirdek kelime grubunun HEPSİNİ içeren TÜM müteşabih ayetler bulunur.
     2. Tek kelime okunduysa (örn: "القارعة"):
        O tek kelimenin geçtiği TÜM ayetleri müteşabih olarak ekler.
+    3. Huruf-u Mukattaa tek başına okunduysa (örn: "الم"):
+       Yalnızca diğer Huruf-u Mukattaa ayetleri eşleştirilir (Elem vb. karışmaz).
     """
     if not okunan_kelimeler or not quran_db:
         return []
@@ -320,6 +338,11 @@ def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ay
     # Besmele kelimelerini çekirdek eşleşme grubundan çıkar (tüm 1. ayetlerin uyuşmasını önler)
     core_words = [w for w in q_words if w not in bismillah_words]
     search_words = core_words if core_words else q_words
+
+    # Huruf-u Mukattaa özel eşleşmesi (Örn: Sadece 'الم' okunduysa sadece diğer Huruf-u Mukattaa ayetlerini getir)
+    if len(search_words) == 1 and search_words[0] in HURUF_MUKATTAA_MAP:
+        mukatta_target = search_words[0]
+        return [(s, a) for s, a in HURUF_MUKATTAA_MAP[mukatta_target] if not (s == main_sure and a == main_ayet)]
 
     matched_pairs = []
     main_key = f"{main_sure}:{main_ayet}"
@@ -453,7 +476,8 @@ async def analiz_et(
                 "sure_adi": SURE_ADLARI.get(sure_no, ""),
                 "sayfa_no": min(604, db_item.get("page", 1)),
                 "sayfa_konum": db_item.get("pos", "orta"),
-                "mutesabihler": []  # Düz listeye çevirdiğimiz için nested göstermeyi engelliyoruz
+                "mutesabihler": [],  # Düz listeye çevirdiğimiz için nested göstermeyi engelliyoruz
+                "is_mutesabih": False
             }
             final_sonuclar.append(main_card)
 
@@ -495,7 +519,8 @@ async def analiz_et(
                         "sure_adi": SURE_ADLARI.get(m_sure, ""),
                         "sayfa_no": min(604, m_db.get("page", 1)),
                         "sayfa_konum": m_db.get("pos", "orta"),
-                        "mutesabihler": []
+                        "mutesabihler": [],
+                        "is_mutesabih": True
                     }
                     final_sonuclar.append(similar_card)
         
@@ -579,13 +604,15 @@ def temizle_harakat(text: str) -> str:
     # 2. Tashkeel ve tecvid/vakıf işaretlerini temizle
     tashkeel_pattern = re.compile(r'[\u064B-\u065F\u0615-\u061A\u06D6-\u06ED]')
     text = tashkeel_pattern.sub('', text)
-    # 3. Vasla (ٱ) ve Maddah (آ) harflerini normalize et (Hemzeleri أ, إ koru - Hurufat ile Elem vb. karışmasını önler)
-    text = text.replace('\u0622', '\u0627').replace('\u0671', '\u0627')
-    # 4. Te marbuta (ة) -> He (ه) normalizasyonu
+    # 3. Tüm Elif / Hemze varyasyonlarını normalize et (Vasla, maddah, hemzeli elif -> sade elif)
+    text = re.sub(r'[\u0622\u0623\u0625\u0671]', '\u0627', text)
+    # 4. Hemze kürsüsü normalizasyonları (ئ -> ي, ؤ -> و)
+    text = text.replace('\u0626', '\u064A').replace('\u0624', '\u0648')
+    # 5. Te marbuta (ة) -> He (ه) normalizasyonu
     text = text.replace('\u0629', '\u0647')
-    # 5. Elif maksure (ى) -> Ya (ي) normalizasyonu
+    # 6. Elif maksure (ى) -> Ya (ي) normalizasyonu
     text = text.replace('\u0649', '\u064A')
-    # 6. Uthmani imla varyasyonlarını standartlaştır
+    # 7. Uthmani imla varyasyonlarını standartlaştır
     text = text.replace('الرحمان', 'الرحمن')
     text = text.replace('الصلوة', 'الصلاة').replace('الزكوة', 'الزكاة').replace('الحيوة', 'الحياة')
     return text
