@@ -192,10 +192,13 @@ def gunun_ayeti():
         res = dict(config["manual_override"])
         s_no = res.get("sure_no")
         a_no = res.get("ayet_no")
-        if s_no and a_no and not res.get("arabic"):
+        if s_no and a_no:
             key = f"{s_no}:{a_no}"
             if key in quran_db:
-                res["arabic"] = quran_db[key].get("ar", "")
+                if not res.get("arabic"):
+                    res["arabic"] = quran_db[key].get("ar", "")
+                if not res.get("sayfa_no"):
+                    res["sayfa_no"] = quran_db[key].get("page", 1)
         return res
 
     # 2. Otomatik: bugünün tarihine göre depodan ayet seç
@@ -205,10 +208,13 @@ def gunun_ayeti():
         ayet = dict(deposu[gun_indeksi % len(deposu)])
         s_no = ayet.get("sure_no")
         a_no = ayet.get("ayet_no")
-        if s_no and a_no and not ayet.get("arabic"):
+        if s_no and a_no:
             key = f"{s_no}:{a_no}"
             if key in quran_db:
-                ayet["arabic"] = quran_db[key].get("ar", "")
+                if not ayet.get("arabic"):
+                    ayet["arabic"] = quran_db[key].get("ar", "")
+                if not ayet.get("sayfa_no"):
+                    ayet["sayfa_no"] = quran_db[key].get("page", 1)
         return ayet
 
     # 3. Fallback (depo boşsa)
@@ -216,7 +222,8 @@ def gunun_ayeti():
         "text": "Şüphesiz Allah sabredenlerle beraberdir.",
         "ref": "Bakara Suresi, 153. Ayet",
         "sure_no": 2,
-        "ayet_no": 153
+        "ayet_no": 153,
+        "sayfa_no": 23
     }
 
 @app.get("/ayet-deposu")
@@ -226,10 +233,13 @@ def public_ayet_deposu():
     for item in deposu:
         s_no = item.get("sure_no")
         a_no = item.get("ayet_no")
-        if s_no and a_no and not item.get("arabic"):
+        if s_no and a_no:
             key = f"{s_no}:{a_no}"
             if key in quran_db:
-                item["arabic"] = quran_db[key].get("ar", "")
+                if not item.get("arabic"):
+                    item["arabic"] = quran_db[key].get("ar", "")
+                if not item.get("sayfa_no"):
+                    item["sayfa_no"] = quran_db[key].get("page", 1)
     return deposu
 
 # --- ADMIN ENDPOINT'LERİ (Build Almadan Günün Ayetini Yönet) ---

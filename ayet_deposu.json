@@ -1,90 +1,618 @@
 [
-  {"text": "Şüphesiz zorlukla birlikte kolaylık vardır.", "ref": "İnşirah Suresi, 5. Ayet", "sure_no": 94, "ayet_no": 5},
-  {"text": "O hâlde her zorlukla birlikte mutlaka bir kolaylık vardır.", "ref": "İnşirah Suresi, 6. Ayet", "sure_no": 94, "ayet_no": 6},
-  {"text": "Allah'ın rahmetinden umut kesmeyin. Şüphesiz Allah bütün günahları bağışlar.", "ref": "Zümer Suresi, 53. Ayet", "sure_no": 39, "ayet_no": 53},
-  {"text": "Kim Allah'a tevekkül ederse Allah ona yeter.", "ref": "Talak Suresi, 3. Ayet", "sure_no": 65, "ayet_no": 3},
-  {"text": "Allah'ı zikirle kalpler mutmain olur.", "ref": "Ra'd Suresi, 28. Ayet", "sure_no": 13, "ayet_no": 28},
-  {"text": "Ve O, her şeye kadirdir.", "ref": "Bakara Suresi, 20. Ayet", "sure_no": 2, "ayet_no": 20},
-  {"text": "Güzel söz ve bağışlama, peşinden eziyet gelen sadakadan daha hayırlıdır.", "ref": "Bakara Suresi, 263. Ayet", "sure_no": 2, "ayet_no": 263},
-  {"text": "Şüphesiz Allah adil davrananları sever.", "ref": "Maide Suresi, 42. Ayet", "sure_no": 5, "ayet_no": 42},
-  {"text": "Rabbim, benim göğsümü aç; işimi bana kolaylaştır.", "ref": "Taha Suresi, 25-26. Ayet", "sure_no": 20, "ayet_no": 25},
-  {"text": "Ey iman edenler! Sabredin, sebat gösterin ve Allah'tan korkun ki kurtuluşa eresiniz.", "ref": "Al-i İmran Suresi, 200. Ayet", "sure_no": 3, "ayet_no": 200},
-  {"text": "Şüphesiz namaz, kötülükten ve çirkin şeylerden alıkoyar.", "ref": "Ankebut Suresi, 45. Ayet", "sure_no": 29, "ayet_no": 45},
-  {"text": "Hiç şüphesiz insan, pek nankördür.", "ref": "Hac Suresi, 66. Ayet", "sure_no": 22, "ayet_no": 66},
-  {"text": "Hayır! İnsan, kendisini yeterli gördüğü için azar.", "ref": "Alak Suresi, 6-7. Ayet", "sure_no": 96, "ayet_no": 6},
-  {"text": "Şüphesiz Allah, tevbe edenleri ve temizlenenleri sever.", "ref": "Bakara Suresi, 222. Ayet", "sure_no": 2, "ayet_no": 222},
-  {"text": "Ey Rabbim! İlmimi artır.", "ref": "Taha Suresi, 114. Ayet", "sure_no": 20, "ayet_no": 114},
-  {"text": "O, doğunun da batının da Rabbidir; O'ndan başka ilah yoktur.", "ref": "Müzzemmil Suresi, 9. Ayet", "sure_no": 73, "ayet_no": 9},
-  {"text": "Yerde ve gökte olanların hepsi Allah'ı tesbih eder.", "ref": "Hadid Suresi, 1. Ayet", "sure_no": 57, "ayet_no": 1},
-  {"text": "Bunlar, insanlardan gizlerler de, Allah'tan gizlemezler. Oysa O, geceleyin istemediği şeyi kurarlarken onların yanı başlarındadır. Allah, onların yaptıklarını (ilmiyle) kuşatmıştır.", "ref": "Nisa Suresi, 108. Ayet", "sure_no": 4, "ayet_no": 108},
-  {"text": "Rabbim beni bağışla, bana merhamet et. Sen merhametlilerin en merhametlisisin.", "ref": "Müminun Suresi, 118. Ayet", "sure_no": 23, "ayet_no": 118},
-  {"text": "Allah Rasûlü’nde sizin için; Allah’a ve âhirete kavuşmayı uman ve Allah’ı çok çok zikreden kimseler için her bakımdan uyulması gereken mükemmel bir örnek vardır.", "ref": "Ahzab Suresi, 21. Ayet", "sure_no": 33, "ayet_no": 21},
-  {"text": "Ey insanlar! Sizi tek bir nefisten yaratan Rabbinize karşı gelmekten sakının.", "ref": "Nisa Suresi, 1. Ayet", "sure_no": 4, "ayet_no": 1},
-  {"text": "Allah, o yıldızları karanlıkta yol bulasınız diye size işaret olarak koydu.", "ref": "En'am Suresi, 97. Ayet", "sure_no": 6, "ayet_no": 97},
-  {"text": "Biz insanı en güzel biçimde yarattık.", "ref": "Tin Suresi, 4. Ayet", "sure_no": 95, "ayet_no": 4},
-  {"text": "Şüphesiz, Allah ve melekleri Peygamber'e salat ederler.", "ref": "Ahzab Suresi, 56. Ayet", "sure_no": 33, "ayet_no": 56},
-  {"text": "Kim zerre miktarı hayır yaparsa onu görecektir.", "ref": "Zilzal Suresi, 7. Ayet", "sure_no": 99, "ayet_no": 7},
-  {"text": "Ey Rabbimiz! Biz kendimize zulmettik, eğer bizi bağışlamaz ve bize rahmetinle muamele etmezsen muhakkak ziyana uğrayacaklardan oluruz!", "ref": "A'raf Suresi, 23. Ayet", "sure_no": 7, "ayet_no": 23},
-  {"text": "Şüphesiz Allah sabredenlerle beraberdir.", "ref": "Bakara Suresi, 153. Ayet", "sure_no": 2, "ayet_no": 153},
-  {"text": "Ey Rabbimiz! Bize ihsan ettiğin hidayetten sonra kalblerimizi haktan saptırma, bize kendi katından rahmet ihsan eyle! Şüphesiz ki, Sen bol ihsan sahibisin.", "ref": "Al-i İmran Suresi, 8. Ayet", "sure_no": 3, "ayet_no": 8},
-  {"text": "Allah hiç kimseye gücünün yettiğinden fazlasını yüklemez.", "ref": "Bakara Suresi, 286. Ayet", "sure_no": 2, "ayet_no": 286},
-  {"text": "Beni anın ki ben de sizi anayım. Bana şükredin, nankörlük etmeyin.", "ref": "Bakara Suresi, 152. Ayet", "sure_no": 2, "ayet_no": 152},
-  {"text": "Şükrederseniz elbette size nimetimi artırırım.", "ref": "İbrahim Suresi, 7. Ayet", "sure_no": 14, "ayet_no": 7},
-  {"text": "Rabbinizden bağışlanma dileyin; çünkü O çok bağışlayandır.", "ref": "Nuh Suresi, 10. Ayet", "sure_no": 71, "ayet_no": 10},
-  {"text": "Şüphesiz benim Rabbim, duaları işitendir.", "ref": "İbrahim Suresi, 39. Ayet", "sure_no": 14, "ayet_no": 39},
-  {"text": "Rabbiniz şöyle buyurdu: Bana dua edin, size cevap vereyim.", "ref": "Mümin Suresi, 60. Ayet", "sure_no": 40, "ayet_no": 60},
-  {"text": "Şüphesiz Allah'ın rahmeti, iyilik yapanlara çok yakındır.", "ref": "A'raf Suresi, 56. Ayet", "sure_no": 7, "ayet_no": 56},
-  {"text": "Allah, göklerin ve yerin nurudur.", "ref": "Nur Suresi, 35. Ayet", "sure_no": 24, "ayet_no": 35},
-  {"text": "O, kullarına karşı çok şefkatli ve merhametlidir.", "ref": "Şura Suresi, 19. Ayet", "sure_no": 42, "ayet_no": 19},
-  {"text": "Kim Allah'a karşı gelmekten sakınırsa, Allah onun işine bir kolaylık verir.", "ref": "Talak Suresi, 4. Ayet", "sure_no": 65, "ayet_no": 4},
-  {"text": "Kim Allah'a karşı gelmekten sakınırsa, Allah onun için bir çıkış yolu yaratır.", "ref": "Talak Suresi, 2. Ayet", "sure_no": 65, "ayet_no": 2},
-  {"text": "Allah dilediğine hesapsız rızık verir.", "ref": "Bakara Suresi, 212. Ayet", "sure_no": 2, "ayet_no": 212},
-  {"text": "Şüphesiz Allah, adaleti, iyiliği ve yakınlara yardım etmeyi emreder.", "ref": "Nahl Suresi, 90. Ayet", "sure_no": 16, "ayet_no": 90},
-  {"text": "İyiliğin karşılığı iyilikten başka bir şey midir?", "ref": "Rahman Suresi, 60. Ayet", "sure_no": 55, "ayet_no": 60},
-  {"text": "Allah, göklerin ve yerin Rabbidir. Öyleyse O'na kulluk et ve O'na ibadette sabırlı ol.", "ref": "Meryem Suresi, 65. Ayet", "sure_no": 19, "ayet_no": 65},
-  {"text": "Kim Allah'a sımsıkı sarılırsa, kesinlikle doğru yola iletilmiştir.", "ref": "Al-i İmran Suresi, 101. Ayet", "sure_no": 3, "ayet_no": 101},
-  {"text": "Allah'ın yardımı ve fetih geldiğinde...", "ref": "Nasr Suresi, 1. Ayet", "sure_no": 110, "ayet_no": 1},
-  {"text": "Rabbin seni terk etmedi ve sana darılmadı.", "ref": "Duha Suresi, 3. Ayet", "sure_no": 93, "ayet_no": 3},
-  {"text": "Şüphesiz ahiret senin için dünyadan daha hayırlıdır.", "ref": "Duha Suresi, 4. Ayet", "sure_no": 93, "ayet_no": 4},
-  {"text": "Rabbin sana verecek ve sen hoşnut olacaksın.", "ref": "Duha Suresi, 5. Ayet", "sure_no": 93, "ayet_no": 5},
-  {"text": "Seni yetim bulup da barındırmadı mı?", "ref": "Duha Suresi, 6. Ayet", "sure_no": 93, "ayet_no": 6},
-  {"text": "Seni yolunu bilmez halde bulup da doğru yola iletmedi mi?", "ref": "Duha Suresi, 7. Ayet", "sure_no": 93, "ayet_no": 7},
-  {"text": "Seni ihtiyaç içinde bulup da zengin etmedi mi?", "ref": "Duha Suresi, 8. Ayet", "sure_no": 93, "ayet_no": 8},
-  {"text": "Öyleyse sakın yetimi ezme.", "ref": "Duha Suresi, 9. Ayet", "sure_no": 93, "ayet_no": 9},
-  {"text": "Sakın isteyeni azarlama.", "ref": "Duha Suresi, 10. Ayet", "sure_no": 93, "ayet_no": 10},
-  {"text": "Artık Allah'ın hangi nimetlerini inkâr edebilirsiniz?", "ref": "Rahman Suresi, 13. Ayet", "sure_no": 55, "ayet_no": 13},
-  {"text": "Allah, sizin için kolaylık ister, zorluk istemez.", "ref": "Bakara Suresi, 185. Ayet", "sure_no": 2, "ayet_no": 185},
-  {"text": "Allah'ın lütfundan isteyin. Şüphesiz Allah her şeyi hakkıyla bilendir.", "ref": "Nisa Suresi, 32. Ayet", "sure_no": 4, "ayet_no": 32},
-  {"text": "İyilik ve takva üzerinde yardımlaşın.", "ref": "Maide Suresi, 2. Ayet", "sure_no": 5, "ayet_no": 2},
-  {"text": "Kim Allah'a ve Resûlüne itaat ederse, işte onlar Allah'ın kendilerine nimet verdiği kimselerle beraberdir.", "ref": "Nisa Suresi, 69. Ayet", "sure_no": 4, "ayet_no": 69},
-  {"text": "Allah, iman edenlerin dostudur; onları karanlıklardan aydınlığa çıkarır.", "ref": "Bakara Suresi, 257. Ayet", "sure_no": 2, "ayet_no": 257},
-  {"text": "Allah, iman edip salih amel işleyenleri bağışlar ve onları büyük bir mükâfatla ödüllendirir.", "ref": "Sebe Suresi, 4. Ayet", "sure_no": 34, "ayet_no": 4},
-  {"text": "Şüphesiz Allah, güzel davrananların ecrini zayi etmez.", "ref": "Tevbe Suresi, 120. Ayet", "sure_no": 9, "ayet_no": 120},
-  {"text": "İyilik yapan kimseye, yaptığının on katı vardır.", "ref": "En'am Suresi, 160. Ayet", "sure_no": 6, "ayet_no": 160},
-  {"text": "Kim Allah'a ve Resûlüne itaat ederse, gerçekten büyük bir kurtuluşa ermiştir.", "ref": "Ahzab Suresi, 71. Ayet", "sure_no": 33, "ayet_no": 71},
-  {"text": "Şüphesiz Allah, kendisine karşı gelmekten sakınanlar ve iyilik yapanlarla beraberdir.", "ref": "Nahl Suresi, 128. Ayet", "sure_no": 16, "ayet_no": 128},
-  {"text": "Allah, sabredenleri sever.", "ref": "Al-i İmran Suresi, 146. Ayet", "sure_no": 3, "ayet_no": 146},
-  {"text": "Gevşemeyin, üzülmeyin; eğer inanmışsanız üstün olan sizsiniz.", "ref": "Al-i İmran Suresi, 139. Ayet", "sure_no": 3, "ayet_no": 139},
-  {"text": "Allah'ın ipine hep birlikte sımsıkı sarılın ve ayrılığa düşmeyin.", "ref": "Al-i İmran Suresi, 103. Ayet", "sure_no": 3, "ayet_no": 103},
-  {"text": "Allah, kendisinden başka ilah olmayandır. O diridir, kayyumdur.", "ref": "Bakara Suresi, 255. Ayet", "sure_no": 2, "ayet_no": 255},
-  {"text": "Nerede olursanız olun, O sizinle beraberdir.", "ref": "Hadid Suresi, 4. Ayet", "sure_no": 57, "ayet_no": 4},
-  {"text": "Allah yaptıklarınızı hakkıyla görmektedir.", "ref": "Bakara Suresi, 265. Ayet", "sure_no": 2, "ayet_no": 265},
-  {"text": "Şüphesiz Allah, güzel davrananların mükâfatını zayi etmez.", "ref": "Hud Suresi, 115. Ayet", "sure_no": 11, "ayet_no": 115},
-  {"text": "Allah'a güven. Vekil olarak Allah yeter.", "ref": "Ahzab Suresi, 3. Ayet", "sure_no": 33, "ayet_no": 3},
-  {"text": "Kim Allah'a güvenip dayanırsa, şüphesiz Allah mutlak güç sahibidir, hüküm ve hikmet sahibidir.", "ref": "Enfal Suresi, 49. Ayet", "sure_no": 8, "ayet_no": 49},
-  {"text": "Şüphesiz Allah, adaletle hükmedenleri sever.", "ref": "Maide Suresi, 42. Ayet", "sure_no": 5, "ayet_no": 42},
-  {"text": "Rabbinin nimetini ise anlat.", "ref": "Duha Suresi, 11. Ayet", "sure_no": 93, "ayet_no": 11},
-  {"text": "Allah'ın nimetini saymaya kalksanız, onu sayamazsınız.", "ref": "Nahl Suresi, 18. Ayet", "sure_no": 16, "ayet_no": 18},
-  {"text": "Allah dilediğini doğru yola iletir.", "ref": "Bakara Suresi, 213. Ayet", "sure_no": 2, "ayet_no": 213},
-  {"text": "Şüphesiz Allah, tövbeleri çok kabul eden ve çok merhamet edendir.", "ref": "Bakara Suresi, 37. Ayet", "sure_no": 2, "ayet_no": 37},
-  {"text": "İyilikle kötülük bir olmaz. Sen kötülüğü en güzel şekilde sav.", "ref": "Fussilet Suresi, 34. Ayet", "sure_no": 41, "ayet_no": 34},
-  {"text": "Kim bir canı kurtarırsa bütün insanları kurtarmış gibi olur.", "ref": "Maide Suresi, 32. Ayet", "sure_no": 5, "ayet_no": 32},
-  {"text": "İyilik yapın. Şüphesiz Allah iyilik yapanları sever.", "ref": "Bakara Suresi, 195. Ayet", "sure_no": 2, "ayet_no": 195},
-  {"text": "Şüphesiz Allah, her şeyi hakkıyla bilendir.", "ref": "Enfal Suresi, 75. Ayet", "sure_no": 8, "ayet_no": 75},
-  {"text": "Allah'ın lütfu ve rahmeti, onların topladıklarından daha hayırlıdır.", "ref": "Yunus Suresi, 58. Ayet", "sure_no": 10, "ayet_no": 58},
-  {"text": "Bilesiniz ki, Allah'ın va'di haktır.", "ref": "Yunus Suresi, 55. Ayet", "sure_no": 10, "ayet_no": 55},
-  {"text": "Kim Allah'a karşı gelmekten sakınır ve sabrederse, şüphesiz Allah iyilik yapanların mükâfatını zayi etmez.", "ref": "Yusuf Suresi, 90. Ayet", "sure_no": 12, "ayet_no": 90},
-  {"text": "Şüphesiz Rabbim çok merhametlidir, çok sevendir.", "ref": "Hud Suresi, 90. Ayet", "sure_no": 11, "ayet_no": 90},
-  {"text": "Şüphesiz Rabbimin rahmeti çok geniştir.", "ref": "En'am Suresi, 147. Ayet", "sure_no": 6, "ayet_no": 147},
-  {"text": "Allah dilediğini rahmetine dahil eder.", "ref": "İnsan Suresi, 31. Ayet", "sure_no": 76, "ayet_no": 31}
+  {
+    "text": "Şüphesiz zorlukla birlikte kolaylık vardır.",
+    "ref": "İnşirah Suresi, 5. Ayet",
+    "sure_no": 94,
+    "ayet_no": 5,
+    "sayfa_no": 597
+  },
+  {
+    "text": "O hâlde her zorlukla birlikte mutlaka bir kolaylık vardır.",
+    "ref": "İnşirah Suresi, 6. Ayet",
+    "sure_no": 94,
+    "ayet_no": 6,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Allah'ın rahmetinden umut kesmeyin. Şüphesiz Allah bütün günahları bağışlar.",
+    "ref": "Zümer Suresi, 53. Ayet",
+    "sure_no": 39,
+    "ayet_no": 53,
+    "sayfa_no": 464
+  },
+  {
+    "text": "Kim Allah'a tevekkül ederse Allah ona yeter.",
+    "ref": "Talak Suresi, 3. Ayet",
+    "sure_no": 65,
+    "ayet_no": 3,
+    "sayfa_no": 558
+  },
+  {
+    "text": "Allah'ı zikirle kalpler mutmain olur.",
+    "ref": "Ra'd Suresi, 28. Ayet",
+    "sure_no": 13,
+    "ayet_no": 28,
+    "sayfa_no": 252
+  },
+  {
+    "text": "Ve O, her şeye kadirdir.",
+    "ref": "Bakara Suresi, 20. Ayet",
+    "sure_no": 2,
+    "ayet_no": 20,
+    "sayfa_no": 4
+  },
+  {
+    "text": "Güzel söz ve bağışlama, peşinden eziyet gelen sadakadan daha hayırlıdır.",
+    "ref": "Bakara Suresi, 263. Ayet",
+    "sure_no": 2,
+    "ayet_no": 263,
+    "sayfa_no": 44
+  },
+  {
+    "text": "Şüphesiz Allah adil davrananları sever.",
+    "ref": "Maide Suresi, 42. Ayet",
+    "sure_no": 5,
+    "ayet_no": 42,
+    "sayfa_no": 115
+  },
+  {
+    "text": "Rabbim, benim göğsümü aç; işimi bana kolaylaştır.",
+    "ref": "Taha Suresi, 25-26. Ayet",
+    "sure_no": 20,
+    "ayet_no": 25,
+    "sayfa_no": 313
+  },
+  {
+    "text": "Ey iman edenler! Sabredin, sebat gösterin ve Allah'tan korkun ki kurtuluşa eresiniz.",
+    "ref": "Al-i İmran Suresi, 200. Ayet",
+    "sure_no": 3,
+    "ayet_no": 200,
+    "sayfa_no": 76
+  },
+  {
+    "text": "Şüphesiz namaz, kötülükten ve çirkin şeylerden alıkoyar.",
+    "ref": "Ankebut Suresi, 45. Ayet",
+    "sure_no": 29,
+    "ayet_no": 45,
+    "sayfa_no": 401
+  },
+  {
+    "text": "Hiç şüphesiz insan, pek nankördür.",
+    "ref": "Hac Suresi, 66. Ayet",
+    "sure_no": 22,
+    "ayet_no": 66,
+    "sayfa_no": 340
+  },
+  {
+    "text": "Hayır! İnsan, kendisini yeterli gördüğü için azar.",
+    "ref": "Alak Suresi, 6-7. Ayet",
+    "sure_no": 96,
+    "ayet_no": 6,
+    "sayfa_no": 598
+  },
+  {
+    "text": "Şüphesiz Allah, tevbe edenleri ve temizlenenleri sever.",
+    "ref": "Bakara Suresi, 222. Ayet",
+    "sure_no": 2,
+    "ayet_no": 222,
+    "sayfa_no": 35
+  },
+  {
+    "text": "Ey Rabbim! İlmimi artır.",
+    "ref": "Taha Suresi, 114. Ayet",
+    "sure_no": 20,
+    "ayet_no": 114,
+    "sayfa_no": 320
+  },
+  {
+    "text": "O, doğunun da batının da Rabbidir; O'ndan başka ilah yoktur.",
+    "ref": "Müzzemmil Suresi, 9. Ayet",
+    "sure_no": 73,
+    "ayet_no": 9,
+    "sayfa_no": 574
+  },
+  {
+    "text": "Yerde ve gökte olanların hepsi Allah'ı tesbih eder.",
+    "ref": "Hadid Suresi, 1. Ayet",
+    "sure_no": 57,
+    "ayet_no": 1,
+    "sayfa_no": 537
+  },
+  {
+    "text": "Bunlar, insanlardan gizlerler de, Allah'tan gizlemezler. Oysa O, geceleyin istemediği şeyi kurarlarken onların yanı başlarındadır. Allah, onların yaptıklarını (ilmiyle) kuşatmıştır.",
+    "ref": "Nisa Suresi, 108. Ayet",
+    "sure_no": 4,
+    "ayet_no": 108,
+    "sayfa_no": 96
+  },
+  {
+    "text": "Rabbim beni bağışla, bana merhamet et. Sen merhametlilerin en merhametlisisin.",
+    "ref": "Müminun Suresi, 118. Ayet",
+    "sure_no": 23,
+    "ayet_no": 118,
+    "sayfa_no": 349
+  },
+  {
+    "text": "Allah Rasûlü’nde sizin için; Allah’a ve âhirete kavuşmayı uman ve Allah’ı çok çok zikreden kimseler için her bakımdan uyulması gereken mükemmel bir örnek vardır.",
+    "ref": "Ahzab Suresi, 21. Ayet",
+    "sure_no": 33,
+    "ayet_no": 21,
+    "sayfa_no": 420
+  },
+  {
+    "text": "Ey insanlar! Sizi tek bir nefisten yaratan Rabbinize karşı gelmekten sakının.",
+    "ref": "Nisa Suresi, 1. Ayet",
+    "sure_no": 4,
+    "ayet_no": 1,
+    "sayfa_no": 77
+  },
+  {
+    "text": "Allah, o yıldızları karanlıkta yol bulasınız diye size işaret olarak koydu.",
+    "ref": "En'am Suresi, 97. Ayet",
+    "sure_no": 6,
+    "ayet_no": 97,
+    "sayfa_no": 140
+  },
+  {
+    "text": "Biz insanı en güzel biçimde yarattık.",
+    "ref": "Tin Suresi, 4. Ayet",
+    "sure_no": 95,
+    "ayet_no": 4,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Şüphesiz, Allah ve melekleri Peygamber'e salat ederler.",
+    "ref": "Ahzab Suresi, 56. Ayet",
+    "sure_no": 33,
+    "ayet_no": 56,
+    "sayfa_no": 426
+  },
+  {
+    "text": "Kim zerre miktarı hayır yaparsa onu görecektir.",
+    "ref": "Zilzal Suresi, 7. Ayet",
+    "sure_no": 99,
+    "ayet_no": 7,
+    "sayfa_no": 600
+  },
+  {
+    "text": "Ey Rabbimiz! Biz kendimize zulmettik, eğer bizi bağışlamaz ve bize rahmetinle muamele etmezsen muhakkak ziyana uğrayacaklardan oluruz!",
+    "ref": "A'raf Suresi, 23. Ayet",
+    "sure_no": 7,
+    "ayet_no": 23,
+    "sayfa_no": 153
+  },
+  {
+    "text": "Şüphesiz Allah sabredenlerle beraberdir.",
+    "ref": "Bakara Suresi, 153. Ayet",
+    "sure_no": 2,
+    "ayet_no": 153,
+    "sayfa_no": 23
+  },
+  {
+    "text": "Ey Rabbimiz! Bize ihsan ettiğin hidayetten sonra kalblerimizi haktan saptırma, bize kendi katından rahmet ihsan eyle! Şüphesiz ki, Sen bol ihsan sahibisin.",
+    "ref": "Al-i İmran Suresi, 8. Ayet",
+    "sure_no": 3,
+    "ayet_no": 8,
+    "sayfa_no": 50
+  },
+  {
+    "text": "Allah hiç kimseye gücünün yettiğinden fazlasını yüklemez.",
+    "ref": "Bakara Suresi, 286. Ayet",
+    "sure_no": 2,
+    "ayet_no": 286,
+    "sayfa_no": 49
+  },
+  {
+    "text": "Beni anın ki ben de sizi anayım. Bana şükredin, nankörlük etmeyin.",
+    "ref": "Bakara Suresi, 152. Ayet",
+    "sure_no": 2,
+    "ayet_no": 152,
+    "sayfa_no": 23
+  },
+  {
+    "text": "Şükrederseniz elbette size nimetimi artırırım.",
+    "ref": "İbrahim Suresi, 7. Ayet",
+    "sure_no": 14,
+    "ayet_no": 7,
+    "sayfa_no": 256
+  },
+  {
+    "text": "Rabbinizden bağışlanma dileyin; çünkü O çok bağışlayandır.",
+    "ref": "Nuh Suresi, 10. Ayet",
+    "sure_no": 71,
+    "ayet_no": 10,
+    "sayfa_no": 570
+  },
+  {
+    "text": "Şüphesiz benim Rabbim, duaları işitendir.",
+    "ref": "İbrahim Suresi, 39. Ayet",
+    "sure_no": 14,
+    "ayet_no": 39,
+    "sayfa_no": 260
+  },
+  {
+    "text": "Rabbiniz şöyle buyurdu: Bana dua edin, size cevap vereyim.",
+    "ref": "Mümin Suresi, 60. Ayet",
+    "sure_no": 40,
+    "ayet_no": 60,
+    "sayfa_no": 474
+  },
+  {
+    "text": "Şüphesiz Allah'ın rahmeti, iyilik yapanlara çok yakındır.",
+    "ref": "A'raf Suresi, 56. Ayet",
+    "sure_no": 7,
+    "ayet_no": 56,
+    "sayfa_no": 157
+  },
+  {
+    "text": "Allah, göklerin ve yerin nurudur.",
+    "ref": "Nur Suresi, 35. Ayet",
+    "sure_no": 24,
+    "ayet_no": 35,
+    "sayfa_no": 354
+  },
+  {
+    "text": "O, kullarına karşı çok şefkatli ve merhametlidir.",
+    "ref": "Şura Suresi, 19. Ayet",
+    "sure_no": 42,
+    "ayet_no": 19,
+    "sayfa_no": 485
+  },
+  {
+    "text": "Kim Allah'a karşı gelmekten sakınırsa, Allah onun işine bir kolaylık verir.",
+    "ref": "Talak Suresi, 4. Ayet",
+    "sure_no": 65,
+    "ayet_no": 4,
+    "sayfa_no": 558
+  },
+  {
+    "text": "Kim Allah'a karşı gelmekten sakınırsa, Allah onun için bir çıkış yolu yaratır.",
+    "ref": "Talak Suresi, 2. Ayet",
+    "sure_no": 65,
+    "ayet_no": 2,
+    "sayfa_no": 558
+  },
+  {
+    "text": "Allah dilediğine hesapsız rızık verir.",
+    "ref": "Bakara Suresi, 212. Ayet",
+    "sure_no": 2,
+    "ayet_no": 212,
+    "sayfa_no": 33
+  },
+  {
+    "text": "Şüphesiz Allah, adaleti, iyiliği ve yakınlara yardım etmeyi emreder.",
+    "ref": "Nahl Suresi, 90. Ayet",
+    "sure_no": 16,
+    "ayet_no": 90,
+    "sayfa_no": 277
+  },
+  {
+    "text": "İyiliğin karşılığı iyilikten başka bir şey midir?",
+    "ref": "Rahman Suresi, 60. Ayet",
+    "sure_no": 55,
+    "ayet_no": 60,
+    "sayfa_no": 533
+  },
+  {
+    "text": "Allah, göklerin ve yerin Rabbidir. Öyleyse O'na kulluk et ve O'na ibadette sabırlı ol.",
+    "ref": "Meryem Suresi, 65. Ayet",
+    "sure_no": 19,
+    "ayet_no": 65,
+    "sayfa_no": 310
+  },
+  {
+    "text": "Kim Allah'a sımsıkı sarılırsa, kesinlikle doğru yola iletilmiştir.",
+    "ref": "Al-i İmran Suresi, 101. Ayet",
+    "sure_no": 3,
+    "ayet_no": 101,
+    "sayfa_no": 63
+  },
+  {
+    "text": "Allah'ın yardımı ve fetih geldiğinde...",
+    "ref": "Nasr Suresi, 1. Ayet",
+    "sure_no": 110,
+    "ayet_no": 1,
+    "sayfa_no": 604
+  },
+  {
+    "text": "Rabbin seni terk etmedi ve sana darılmadı.",
+    "ref": "Duha Suresi, 3. Ayet",
+    "sure_no": 93,
+    "ayet_no": 3,
+    "sayfa_no": 596
+  },
+  {
+    "text": "Şüphesiz ahiret senin için dünyadan daha hayırlıdır.",
+    "ref": "Duha Suresi, 4. Ayet",
+    "sure_no": 93,
+    "ayet_no": 4,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Rabbin sana verecek ve sen hoşnut olacaksın.",
+    "ref": "Duha Suresi, 5. Ayet",
+    "sure_no": 93,
+    "ayet_no": 5,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Seni yetim bulup da barındırmadı mı?",
+    "ref": "Duha Suresi, 6. Ayet",
+    "sure_no": 93,
+    "ayet_no": 6,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Seni yolunu bilmez halde bulup da doğru yola iletmedi mi?",
+    "ref": "Duha Suresi, 7. Ayet",
+    "sure_no": 93,
+    "ayet_no": 7,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Seni ihtiyaç içinde bulup da zengin etmedi mi?",
+    "ref": "Duha Suresi, 8. Ayet",
+    "sure_no": 93,
+    "ayet_no": 8,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Öyleyse sakın yetimi ezme.",
+    "ref": "Duha Suresi, 9. Ayet",
+    "sure_no": 93,
+    "ayet_no": 9,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Sakın isteyeni azarlama.",
+    "ref": "Duha Suresi, 10. Ayet",
+    "sure_no": 93,
+    "ayet_no": 10,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Artık Allah'ın hangi nimetlerini inkâr edebilirsiniz?",
+    "ref": "Rahman Suresi, 13. Ayet",
+    "sure_no": 55,
+    "ayet_no": 13,
+    "sayfa_no": 531
+  },
+  {
+    "text": "Allah, sizin için kolaylık ister, zorluk istemez.",
+    "ref": "Bakara Suresi, 185. Ayet",
+    "sure_no": 2,
+    "ayet_no": 185,
+    "sayfa_no": 28
+  },
+  {
+    "text": "Allah'ın lütfundan isteyin. Şüphesiz Allah her şeyi hakkıyla bilendir.",
+    "ref": "Nisa Suresi, 32. Ayet",
+    "sure_no": 4,
+    "ayet_no": 32,
+    "sayfa_no": 83
+  },
+  {
+    "text": "İyilik ve takva üzerinde yardımlaşın.",
+    "ref": "Maide Suresi, 2. Ayet",
+    "sure_no": 5,
+    "ayet_no": 2,
+    "sayfa_no": 106
+  },
+  {
+    "text": "Kim Allah'a ve Resûlüne itaat ederse, işte onlar Allah'ın kendilerine nimet verdiği kimselerle beraberdir.",
+    "ref": "Nisa Suresi, 69. Ayet",
+    "sure_no": 4,
+    "ayet_no": 69,
+    "sayfa_no": 89
+  },
+  {
+    "text": "Allah, iman edenlerin dostudur; onları karanlıklardan aydınlığa çıkarır.",
+    "ref": "Bakara Suresi, 257. Ayet",
+    "sure_no": 2,
+    "ayet_no": 257,
+    "sayfa_no": 43
+  },
+  {
+    "text": "Allah, iman edip salih amel işleyenleri bağışlar ve onları büyük bir mükâfatla ödüllendirir.",
+    "ref": "Sebe Suresi, 4. Ayet",
+    "sure_no": 34,
+    "ayet_no": 4,
+    "sayfa_no": 428
+  },
+  {
+    "text": "Şüphesiz Allah, güzel davrananların ecrini zayi etmez.",
+    "ref": "Tevbe Suresi, 120. Ayet",
+    "sure_no": 9,
+    "ayet_no": 120,
+    "sayfa_no": 206
+  },
+  {
+    "text": "İyilik yapan kimseye, yaptığının on katı vardır.",
+    "ref": "En'am Suresi, 160. Ayet",
+    "sure_no": 6,
+    "ayet_no": 160,
+    "sayfa_no": 150
+  },
+  {
+    "text": "Kim Allah'a ve Resûlüne itaat ederse, gerçekten büyük bir kurtuluşa ermiştir.",
+    "ref": "Ahzab Suresi, 71. Ayet",
+    "sure_no": 33,
+    "ayet_no": 71,
+    "sayfa_no": 427
+  },
+  {
+    "text": "Şüphesiz Allah, kendisine karşı gelmekten sakınanlar ve iyilik yapanlarla beraberdir.",
+    "ref": "Nahl Suresi, 128. Ayet",
+    "sure_no": 16,
+    "ayet_no": 128,
+    "sayfa_no": 281
+  },
+  {
+    "text": "Allah, sabredenleri sever.",
+    "ref": "Al-i İmran Suresi, 146. Ayet",
+    "sure_no": 3,
+    "ayet_no": 146,
+    "sayfa_no": 68
+  },
+  {
+    "text": "Gevşemeyin, üzülmeyin; eğer inanmışsanız üstün olan sizsiniz.",
+    "ref": "Al-i İmran Suresi, 139. Ayet",
+    "sure_no": 3,
+    "ayet_no": 139,
+    "sayfa_no": 67
+  },
+  {
+    "text": "Allah'ın ipine hep birlikte sımsıkı sarılın ve ayrılığa düşmeyin.",
+    "ref": "Al-i İmran Suresi, 103. Ayet",
+    "sure_no": 3,
+    "ayet_no": 103,
+    "sayfa_no": 63
+  },
+  {
+    "text": "Allah, kendisinden başka ilah olmayandır. O diridir, kayyumdur.",
+    "ref": "Bakara Suresi, 255. Ayet",
+    "sure_no": 2,
+    "ayet_no": 255,
+    "sayfa_no": 42
+  },
+  {
+    "text": "Nerede olursanız olun, O sizinle beraberdir.",
+    "ref": "Hadid Suresi, 4. Ayet",
+    "sure_no": 57,
+    "ayet_no": 4,
+    "sayfa_no": 538
+  },
+  {
+    "text": "Allah yaptıklarınızı hakkıyla görmektedir.",
+    "ref": "Bakara Suresi, 265. Ayet",
+    "sure_no": 2,
+    "ayet_no": 265,
+    "sayfa_no": 45
+  },
+  {
+    "text": "Şüphesiz Allah, güzel davrananların mükâfatını zayi etmez.",
+    "ref": "Hud Suresi, 115. Ayet",
+    "sure_no": 11,
+    "ayet_no": 115,
+    "sayfa_no": 234
+  },
+  {
+    "text": "Allah'a güven. Vekil olarak Allah yeter.",
+    "ref": "Ahzab Suresi, 3. Ayet",
+    "sure_no": 33,
+    "ayet_no": 3,
+    "sayfa_no": 418
+  },
+  {
+    "text": "Kim Allah'a güvenip dayanırsa, şüphesiz Allah mutlak güç sahibidir, hüküm ve hikmet sahibidir.",
+    "ref": "Enfal Suresi, 49. Ayet",
+    "sure_no": 8,
+    "ayet_no": 49,
+    "sayfa_no": 183
+  },
+  {
+    "text": "Şüphesiz Allah, adaletle hükmedenleri sever.",
+    "ref": "Maide Suresi, 42. Ayet",
+    "sure_no": 5,
+    "ayet_no": 42,
+    "sayfa_no": 115
+  },
+  {
+    "text": "Rabbinin nimetini ise anlat.",
+    "ref": "Duha Suresi, 11. Ayet",
+    "sure_no": 93,
+    "ayet_no": 11,
+    "sayfa_no": 597
+  },
+  {
+    "text": "Allah'ın nimetini saymaya kalksanız, onu sayamazsınız.",
+    "ref": "Nahl Suresi, 18. Ayet",
+    "sure_no": 16,
+    "ayet_no": 18,
+    "sayfa_no": 269
+  },
+  {
+    "text": "Allah dilediğini doğru yola iletir.",
+    "ref": "Bakara Suresi, 213. Ayet",
+    "sure_no": 2,
+    "ayet_no": 213,
+    "sayfa_no": 33
+  },
+  {
+    "text": "Şüphesiz Allah, tövbeleri çok kabul eden ve çok merhamet edendir.",
+    "ref": "Bakara Suresi, 37. Ayet",
+    "sure_no": 2,
+    "ayet_no": 37,
+    "sayfa_no": 6
+  },
+  {
+    "text": "İyilikle kötülük bir olmaz. Sen kötülüğü en güzel şekilde sav.",
+    "ref": "Fussilet Suresi, 34. Ayet",
+    "sure_no": 41,
+    "ayet_no": 34,
+    "sayfa_no": 480
+  },
+  {
+    "text": "Kim bir canı kurtarırsa bütün insanları kurtarmış gibi olur.",
+    "ref": "Maide Suresi, 32. Ayet",
+    "sure_no": 5,
+    "ayet_no": 32,
+    "sayfa_no": 113
+  },
+  {
+    "text": "İyilik yapın. Şüphesiz Allah iyilik yapanları sever.",
+    "ref": "Bakara Suresi, 195. Ayet",
+    "sure_no": 2,
+    "ayet_no": 195,
+    "sayfa_no": 30
+  },
+  {
+    "text": "Şüphesiz Allah, her şeyi hakkıyla bilendir.",
+    "ref": "Enfal Suresi, 75. Ayet",
+    "sure_no": 8,
+    "ayet_no": 75,
+    "sayfa_no": 186
+  },
+  {
+    "text": "Allah'ın lütfu ve rahmeti, onların topladıklarından daha hayırlıdır.",
+    "ref": "Yunus Suresi, 58. Ayet",
+    "sure_no": 10,
+    "ayet_no": 58,
+    "sayfa_no": 215
+  },
+  {
+    "text": "Bilesiniz ki, Allah'ın va'di haktır.",
+    "ref": "Yunus Suresi, 55. Ayet",
+    "sure_no": 10,
+    "ayet_no": 55,
+    "sayfa_no": 215
+  },
+  {
+    "text": "Kim Allah'a karşı gelmekten sakınır ve sabrederse, şüphesiz Allah iyilik yapanların mükâfatını zayi etmez.",
+    "ref": "Yusuf Suresi, 90. Ayet",
+    "sure_no": 12,
+    "ayet_no": 90,
+    "sayfa_no": 246
+  },
+  {
+    "text": "Şüphesiz Rabbim çok merhametlidir, çok sevendir.",
+    "ref": "Hud Suresi, 90. Ayet",
+    "sure_no": 11,
+    "ayet_no": 90,
+    "sayfa_no": 232
+  },
+  {
+    "text": "Şüphesiz Rabbimin rahmeti çok geniştir.",
+    "ref": "En'am Suresi, 147. Ayet",
+    "sure_no": 6,
+    "ayet_no": 147,
+    "sayfa_no": 148
+  },
+  {
+    "text": "Allah dilediğini rahmetine dahil eder.",
+    "ref": "İnsan Suresi, 31. Ayet",
+    "sure_no": 76,
+    "ayet_no": 31,
+    "sayfa_no": 580
+  }
 ]
