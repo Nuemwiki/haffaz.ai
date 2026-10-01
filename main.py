@@ -55,7 +55,7 @@ KURALLAR:
 
 # --- LİMİT SİSTEMİ (JSON Veritabanı ile Kalıcı) ---
 LIMITS_FILE = os.path.join(os.path.dirname(__file__), "user_limits.json")
-GUNLUK_LIMIT_UCRETSIZ = 5
+GUNLUK_LIMIT_UCRETSIZ = 6
 
 def load_limits():
     if os.path.exists(LIMITS_FILE):
@@ -105,11 +105,11 @@ def limit_kontrol(kullanici_id: str, is_premium: bool = False):
         
     if kayit["kullanim"] >= GUNLUK_LIMIT_UCRETSIZ:
         save_limits(kullanici_limitler)
-        return False, {"limit_doldu": True, "kalan": 0, "limit": GUNLUK_LIMIT_UCRETSIZ}
+        return False, {"limit_doldu": True, "kalan": 0, "limit": GUNLUK_LIMIT_UCRETSIZ, "kullanim": kayit["kullanim"]}
     
     kayit["kullanim"] += 1
     save_limits(kullanici_limitler)
-    return True, {"limit_doldu": False, "kalan": GUNLUK_LIMIT_UCRETSIZ - kayit["kullanim"], "limit": GUNLUK_LIMIT_UCRETSIZ}
+    return True, {"limit_doldu": False, "kalan": GUNLUK_LIMIT_UCRETSIZ - kayit["kullanim"], "limit": GUNLUK_LIMIT_UCRETSIZ, "kullanim": kayit["kullanim"]}
 
 def limit_iade_et(kullanici_id: str):
     global kullanici_limitler
@@ -582,7 +582,7 @@ async def video_izlendi(x_user_id: str = Header(None, alias="X-User-ID")):
         
     print(f"After: {kayit}")
     save_limits(kullanici_limitler)
-    return {"basarili": True, "kalan": GUNLUK_LIMIT_UCRETSIZ - kayit["kullanim"]}
+    return {"basarili": True, "kalan": GUNLUK_LIMIT_UCRETSIZ - kayit["kullanim"], "kullanim": kayit["kullanim"]}
 
 @app.post("/test-limit-arttir")
 async def test_limit_arttir(x_user_id: str = Header(None, alias="X-User-ID")):
@@ -592,7 +592,7 @@ async def test_limit_arttir(x_user_id: str = Header(None, alias="X-User-ID")):
     kayit["tarih"] = datetime.now().date()
     kayit["kullanim"] = -8
     save_limits(kullanici_limitler)
-    return {"basarili": True, "kalan": 10}
+    return {"basarili": True, "kalan": 10, "kullanim": 1}
 
 @app.get("/limit-durumu")
 async def limit_durumu(x_user_id: str = Header(None, alias="X-User-ID")):
@@ -603,10 +603,12 @@ async def limit_durumu(x_user_id: str = Header(None, alias="X-User-ID")):
     
     if kayit["tarih"] != bugun: 
         kalan = GUNLUK_LIMIT_UCRETSIZ
+        kullanim = 0
     else: 
         kalan = max(0, GUNLUK_LIMIT_UCRETSIZ - kayit["kullanim"])
+        kullanim = kayit["kullanim"]
         
-    return {"kalan": kalan, "limit": GUNLUK_LIMIT_UCRETSIZ}
+    return {"kalan": kalan, "limit": GUNLUK_LIMIT_UCRETSIZ, "kullanim": kullanim}
 
 def temizle_harakat(text: str) -> str:
     # 1. Dagger Alif (\u0670) temizle (Standart Alif ile birleşip الرحمان / الرحمن uyuşmazlığını önler)
