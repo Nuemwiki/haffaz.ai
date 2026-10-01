@@ -1,8 +1,11 @@
-from fastapi import FastAPI, UploadFile, File, Header, HTTPException, Query
+from fastapi import FastAPI, UploadFile, File, Header, HTTPException, Query, Form
 from google import genai
 from google.genai import types, errors
 import os
 import json
+import shutil
+import subprocess
+import tempfile
 from pydantic import BaseModel
 import re
 from typing import List, Optional, Tuple
@@ -379,6 +382,8 @@ def find_exact_mutashabihat_in_db(okunan_kelimeler: str, main_sure: int, main_ay
 @app.post("/analiz-et")
 async def analiz_et(
     file: UploadFile = File(...), 
+    start_sec: Optional[float] = Form(None),
+    duration_sec: Optional[float] = Form(None),
     x_user_id: str = Header(None, alias="X-User-ID"), 
     x_premium: str = Header("false", alias="X-Premium")
 ):
@@ -395,15 +400,75 @@ async def analiz_et(
         content = await file.read()
         mime_type = file.content_type or "audio/m4a"
 
+        trimmed_successfully = False
+        gemini_prompt_parts = []
+
+        if start_sec is not None and start_sec >= 0:
+            dur = duration_sec if (duration_sec and duration_sec > 0) else 10.0
+            
+            # Find ffmpeg binary (system PATH or common WinGet path)
+            ffmpeg_path = shutil.which("ffmpeg")
+            if not ffmpeg_path and os.name == "nt":
+                winget_candidate = r"C:\Users\oznur\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.0.1-full_build\bin\ffmpeg.exe"
+                if os.path.exists(winget_candidate):
+                    ffmpeg_path = winget_candidate
+
+            if ffmpeg_path:
+                try:
+                    orig_ext = os.path.splitext(file.filename or "")[1] or ".m4a"
+                    with tempfile.NamedTemporaryFile(suffix=orig_ext, delete=False) as in_tmp:
+                        in_tmp.write(content)
+                        in_tmp_path = in_tmp.name
+                    out_tmp_path = in_tmp_path + "_trimmed.m4a"
+
+                    cmd = [
+                        ffmpeg_path, "-y",
+                        "-ss", str(start_sec),
+                        "-t", str(dur),
+                        "-i", in_tmp_path,
+                        "-c:a", "aac",
+                        "-b:a", "128k",
+                        out_tmp_path
+                    ]
+                    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    if res.returncode == 0 and os.path.exists(out_tmp_path) and os.path.getsize(out_tmp_path) > 0:
+                        with open(out_tmp_path, "rb") as f_out:
+                            content = f_out.read()
+                        mime_type = "audio/m4a"
+                        trimmed_successfully = True
+                        print(f"Ses kırpıldı (FFmpeg): start={start_sec}s, dur={dur}s, yeni boyut={len(content)} bayt")
+                    
+                    try:
+                        os.remove(in_tmp_path)
+                    except Exception:
+                        pass
+                    try:
+                        if os.path.exists(out_tmp_path):
+                            os.remove(out_tmp_path)
+                    except Exception:
+                        pass
+                except Exception as trim_err:
+                    print("FFmpeg trim hatası:", trim_err)
+
+            if not trimmed_successfully:
+                gemini_prompt_parts.append(
+                    f"ÖNEMLİ TALİMAT: Kullanıcı ses dosyasının {int(start_sec)}. saniyesi ile {int(start_sec + dur)}. saniyesi arasını seçti. YALNIZCA bu {int(start_sec)}-{int(start_sec + dur)} saniye aralığında okunan ayeti ve kelimeleri tespit et!"
+                )
+
+        # Prepare contents for Gemini
+        gemini_contents = [
+            types.Part.from_bytes(
+                data=content,
+                mime_type=mime_type
+            )
+        ]
+        for prompt_part in gemini_prompt_parts:
+            gemini_contents.append(prompt_part)
+
         # Ask Gemini to find the verse and ALL similar verses (mutashabihat)
         response = client.models.generate_content(
             model=model_name,
-            contents=[
-                types.Part.from_bytes(
-                    data=content,
-                    mime_type=mime_type
-                )
-            ],
+            contents=gemini_contents,
             config=types.GenerateContentConfig(
                 temperature=0.0,
                 max_output_tokens=800,
