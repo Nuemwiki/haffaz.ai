@@ -161,6 +161,42 @@ app.add_middleware(
 def home():
     return {"durum": "Hafiz AI - Konum Modu Aktif", "model": model_name, "db_loaded": len(quran_db) > 0}
 
+@app.get("/version-check")
+def version_check(platform: str = Query("android"), build: int = Query(0)):
+    """
+    Mobil uygulama için sürüm ve güncelleme kontrol endpoint'i.
+    İstemci kendi platformunu ve mevcut build numarasını gönderir.
+    En güncel build numarasından düşükse güncelleme önerisi döner.
+    """
+    platform_clean = platform.lower().strip()
+    
+    # Ortam değişkeni veya varsayılan en güncel build numaraları:
+    # Android: 33 | iOS: 55
+    latest_ios_build = int(os.getenv("LATEST_IOS_BUILD", "55"))
+    latest_android_build = int(os.getenv("LATEST_ANDROID_BUILD", "33"))
+    
+    if platform_clean == "ios":
+        latest_build = latest_ios_build
+        store_url = "https://apps.apple.com/app/id6747209930"
+    else:
+        latest_build = latest_android_build
+        store_url = "market://details?id=com.oznur.quranhaffazai"
+        
+    is_update_available = build < latest_build
+    is_force_update = False
+    
+    return {
+        "is_update_available": is_update_available,
+        "is_force_update": is_force_update,
+        "latest_build": latest_build,
+        "current_build": build,
+        "platform": platform_clean,
+        "store_url": store_url,
+        "title": "Yeni Güncelleme Yayında!",
+        "message": "Daha iyi bir uygulama deneyimi için lütfen uygulamayı güncelleyin.",
+        "badge": "YENİ SÜRÜM MEVCUT"
+    }
+
 AYET_DEPOSU_FILE = "ayet_deposu.json"
 AYET_CONFIG_FILE = "gunun_ayeti_config.json"
 ADMIN_SECRET = os.getenv("ADMIN_SECRET", "haffaz-admin-2025")
