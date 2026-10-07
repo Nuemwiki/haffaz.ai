@@ -171,9 +171,9 @@ def version_check(platform: str = Query("android"), build: int = Query(0)):
     platform_clean = platform.lower().strip()
     
     # Ortam değişkeni veya varsayılan en güncel build numaraları:
-    # Android: 31 | iOS: 55
+    # Android: 33 | iOS: 55
     latest_ios_build = int(os.getenv("LATEST_IOS_BUILD", "55"))
-    latest_android_build = int(os.getenv("LATEST_ANDROID_BUILD", "31"))
+    latest_android_build = int(os.getenv("LATEST_ANDROID_BUILD", "33"))
     
     if platform_clean == "ios":
         latest_build = latest_ios_build
@@ -193,7 +193,12 @@ def version_check(platform: str = Query("android"), build: int = Query(0)):
         "platform": platform_clean,
         "store_url": store_url,
         "title": "Yeni Güncelleme Yayında!",
-        "message": "Daha iyi bir uygulama deneyimi için lütfen uygulamayı güncelleyin.",
+        "message": (
+            "Daha iyi ve kesintisiz bir uygulama deneyimi için lütfen uygulamayı güncelleyin!\n\n"
+            "• Namaz vakti bildirimlerindeki hatalar düzeltildi.\n"
+            "• Hicri takvim ve konum algılama optimize edildi.\n\n"
+            "(Eğer güncellemeyi zaten yaptıysanız bu mesajı lütfen dikkate almayın.)"
+        ),
         "badge": "YENİ SÜRÜM MEVCUT"
     }
 
